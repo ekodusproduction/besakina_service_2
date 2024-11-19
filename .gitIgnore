@@ -1,0 +1,9 @@
+/# node.js
+#
+node_modules/
+/public
+.env
+logs.txt
+private.key
+certificate.pem
+prod.env
