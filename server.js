@@ -17,7 +17,7 @@ import { connectRedis } from './src/config/Redis/redis.js';
 const port = process.env.PORT || 3000;
 
 const httpServer = http.createServer(app);
-// const redis = connectRedis()
+const redis = connectRedis()
 const io = new Server(httpServer, {
     cors: {
         origin: "*",
