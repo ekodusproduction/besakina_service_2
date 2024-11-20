@@ -1,5 +1,5 @@
 import Chat from "./chatModel.js";
-import { redisClient } from "../../config/Redis/redis.js"
+import { redis } from "../../config/Redis/redis.js"
 export const chatSocket = (socket) => {
 
     socket.on('join', async ({ reciever }) => {
@@ -53,7 +53,7 @@ export const chatSocket = (socket) => {
             const roomId = [reciever, sender.id].sort().join("_");
 
             // Check if the recipient is active
-            const isRecipientActive = await redisClient.sismember('onlineUsers', reciever);
+            const isRecipientActive = await redis.sismember('onlineUsers', reciever);
 
             if (socket.rooms.has(roomId)) {
                 socket.emit("userIsActive", { userId: reciever, isActive: isRecipientActive });
