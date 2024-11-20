@@ -39,6 +39,7 @@ async function connectRedis() {
         await redisClient.connect();
 
         console.log('Redis client connected successfully');
+        console.log('Redis Client:', redisClient);
         console.log(`Redis category loading job executed at ${new Date().toISOString()}`);
         const categoryCount = await categoriesLoader();
         console.log(`Number of categories loaded: ${categoryCount}`);
