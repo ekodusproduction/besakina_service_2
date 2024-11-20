@@ -12,7 +12,7 @@ export const mongooseConnection = async function () {
         const db = mongoose.connection.db;
         const collections = await db.listCollections().toArray();
 
-        const redis = connectRedis()
+        const redis = await connectRedis()
 
         console.log('Connected to MongoDB using Mongoose and reindexed all collections');
     } catch (err) {
