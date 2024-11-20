@@ -1,5 +1,5 @@
 
-import { getAllCategoryList } from '../../config/Redis/data/category.seeder.js';
+// import { getAllCategoryList } from '../../config/Redis/data/category.seeder.js';
 import { sendError, sendResponse } from '../../Utility/response.js';
 import Category from './categoryModel.js';
 import { ApplicationError } from '../../ErrorHandler/applicationError.js';
