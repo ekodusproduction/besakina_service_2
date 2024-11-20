@@ -1,8 +1,8 @@
 // redisConfig.js
 import { createClient } from 'redis';
 import dotenv from 'dotenv';
-import { categoriesLoader } from './data/category.seeder';
-import { advertisementLoader } from './data/advertisement.seeder';
+import { categoriesLoader } from './data/category.seeder.js';
+import { advertisementLoader } from './data/advertisement.seeder.js';
 
 dotenv.config();
 
@@ -45,7 +45,7 @@ async function connectRedis() {
         console.log(`Redis advertisement loading job executed at ${new Date().toISOString()}`);
         const advertisementCount = await advertisementLoader();
         console.log(`Number of advertisement loaded: ${advertisementCount}`);
-        
+
     } catch (err) {
         console.error('Redis connection error', err);
     }

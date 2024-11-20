@@ -1,6 +1,6 @@
 import cron from 'node-cron';
-import { categoriesLoader } from './data/category.seeder';
-import { advertisementLoader } from './data/advertisement.seeder';
+import { categoriesLoader } from './data/category.seeder.js';
+import { advertisementLoader } from './data/advertisement.seeder.js';
 
 const cronCategoryJob = cron.schedule("0 * * * *", async () => {
     try {
