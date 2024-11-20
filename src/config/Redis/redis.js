@@ -51,5 +51,12 @@ async function connectRedis() {
         console.error('Redis connection error', err);
     }
 }
+redisClient.monitor((err, res) => {
+    if (err) {
+        console.log("Error in monitor mode:", err);
+    } else {
+        console.log("Monitoring mode started:", res);
+    }
+});
 
 export { redisClient, connectRedis };
