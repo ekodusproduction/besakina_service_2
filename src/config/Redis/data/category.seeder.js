@@ -34,11 +34,14 @@ export const categoriesLoader = async function () {
 
         // Delete existing keys in Redis
         await asyncDel(CATEGORY_KEY);
+        console.log("Deleted CATEGORY_KEY");
+        
         await asyncDel(CATEGORY_SCHEMA_KEY);
+        console.log("Deleted CATEGORY_SCHEMA_KEY");
+        
         await asyncDel(CATEGORY_TAGS_KEY);
-        console.log("categoriesList", categoriesList)
-        console.log("categoriesSchema", categoriesSchema)
-        console.log("categoriesTags", categoriesTags)
+        console.log("Deleted CATEGORY_TAGS_KEY");
+        
 
         // Store categories in Redis
         for (const category of categoriesList) {
