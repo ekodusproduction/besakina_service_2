@@ -1,6 +1,7 @@
 import { getDB } from "../../mongodb.js";
 import { logger } from "../../../Middlewares/logger.middleware.js";
 import { asyncSet, asyncDel, asyncGet, asyncHset, asyncHgetall, asyncHget } from "../redis.methods.js";
+import { redisClient } from "../redis.js";
 
 const CATEGORY_KEY = "categoriesList";
 const CATEGORY_SCHEMA_KEY = "categoriesSchema";
