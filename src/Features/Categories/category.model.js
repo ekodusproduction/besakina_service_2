@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const subCategorySchema = new mongoose.Schema({
     name: { type: String, required: true, trim: true },
@@ -14,7 +14,8 @@ const categorySchema = new mongoose.Schema({
     subcategory: [subCategorySchema],
     icon: { type: String },
     rank: { type: Number }, 
-    :{type:object}
+    sellSchema:{type:object},
+    marketingSchema:{type:object}
 });
 categorySchema.index({  is_active: 1, rank: 1 })
 const Category = mongoose.model("Category", categorySchema);
