@@ -31,8 +31,8 @@ export const createCategory = async (req, res, next) => {
 
 export const listCategory = async (req, res, next) => {
     try {
-        const categories = await getAllCategoryList()
-        // const categories = await getDB().collection("Category").find({ is_active: true }).sort({ rank: 1 }).toArray();
+        // const categories = await getAllCategoryList()
+        const categories = await getDB().collection("Category").find({ is_active: true }).sort({ rank: 1 }).toArray();
 
         if (!categories.length) {
             return await sendError(res, 'Categories not found', 404);
