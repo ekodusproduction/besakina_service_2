@@ -33,13 +33,7 @@ redisClient.on('end', () => {
 redisClient.on('reconnecting', (delay, attempt) => {
     console.log(`Reconnecting to Redis: attempt ${attempt}, delay ${delay}`);
 });
-redisClient.monitor((err, res) => {
-    if (err) {
-        console.log("Error in monitor mode:", err);
-    } else {
-        console.log("Monitoring mode started:", res);
-    }
-});
+
 async function connectRedis() {
     try {
         await redisClient.connect();
