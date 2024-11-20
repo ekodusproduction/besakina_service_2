@@ -1,6 +1,6 @@
 import { getDB } from "../../mongodb.js";
 import { logger } from "../../../Middlewares/logger.middleware.js";
-import { asyncSet, asyncDel, asyncGet, asyncHset, asyncHgetall, asyncHget } from "../redis.methods.js";
+import { asyncSet, asyncDel, asyncGet, asyncHset, asyncHgetall, asyncHget,asyncExists } from "../redis.methods.js";
 import { redisClient } from "../redis.js";
 
 const CATEGORY_KEY = "categoriesList";
@@ -34,30 +34,29 @@ export const categoriesLoader = async function () {
         }));
 
         // Delete existing keys in Redis
-        redisClient.del(CATEGORY_KEY, (err, response) => {
-            if (err) {
-                console.log('Error deleting CATEGORY_KEY:', err);
-            } else {
-                console.log('Deleted CATEGORY_KEY:', response);
-            }
-        });
-        
-        redisClient.del(CATEGORY_SCHEMA_KEY, (err, response) => {
-            if (err) {
-                console.log('Error deleting CATEGORY_SCHEMA_KEY:', err);
-            } else {
-                console.log('Deleted CATEGORY_SCHEMA_KEY:', response);
-            }
-        });
-        
-        redisClient.del(CATEGORY_TAGS_KEY, (err, response) => {
-            if (err) {
-                console.log('Error deleting CATEGORY_TAGS_KEY:', err);
-            } else {
-                console.log('Deleted CATEGORY_TAGS_KEY:', response);
-            }
-        });
-        
+        const categoryKeyExists = await asyncExists(CATEGORY_KEY);
+        console.log(`CATEGORY_KEY exists: ${categoryKeyExists}`);
+    
+        const categorySchemaKeyExists = await asyncExists(CATEGORY_SCHEMA_KEY);
+        console.log(`CATEGORY_SCHEMA_KEY exists: ${categorySchemaKeyExists}`);
+    
+        const categoryTagsKeyExists = await asyncExists(CATEGORY_TAGS_KEY);
+        console.log(`CATEGORY_TAGS_KEY exists: ${categoryTagsKeyExists}`);
+    
+        if (categoryKeyExists) {
+            await asyncDel(CATEGORY_KEY);
+            console.log("Deleted CATEGORY_KEY");
+        }
+    
+        if (categorySchemaKeyExists) {
+            await asyncDel(CATEGORY_SCHEMA_KEY);
+            console.log("Deleted CATEGORY_SCHEMA_KEY");
+        }
+    
+        if (categoryTagsKeyExists) {
+            await asyncDel(CATEGORY_TAGS_KEY);
+            console.log("Deleted CATEGORY_TAGS_KEY");
+        }
         
         // Store categories in Redis
         for (const category of categoriesList) {

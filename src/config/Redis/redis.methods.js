@@ -77,7 +77,7 @@ const asyncZscore = promisify(redisClient.zScore).bind(redisClient);
 // Delete a key
 // Data is deleted from the Redis store
 const asyncDel = promisify(redisClient.del).bind(redisClient);
-
+const asyncExists = promisify(redisClient.exists).bind(redisClient);
 // Exporting the methods
 export {
     asyncSet,        // Set a key-value pair (string)
@@ -98,5 +98,6 @@ export {
     asyncZadd,       // Add a member to a sorted set (member-score pair)
     asyncZrange,     // Get members of a sorted set (list, sorted by score)
     asyncZscore,     // Get score of a specific member in a sorted set (numeric value)
-    asyncDel         // Delete a key from Redis (removes data)
+    asyncDel  ,       // Delete a key from Redis (removes data)
+    asyncExists
 };
