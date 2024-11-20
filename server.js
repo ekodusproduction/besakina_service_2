@@ -12,7 +12,7 @@ import fs from "fs";
 import { connectToMongoDB } from './src/config/mongodb.js';
 import { mongooseConnection } from "./src/config/mongoose.js"
 import { chatSocket } from './src/Features/Chats/chat.socket.js';
-import { addUserToOnline, removeUserFromOnline } from './src/Features/Users/userActivity.js';
+// import { addUserToOnline, removeUserFromOnline } from './src/Features/Users/userActivity.js';
 const port = process.env.PORT || 3000;
 
 const httpServer = http.createServer(app);
