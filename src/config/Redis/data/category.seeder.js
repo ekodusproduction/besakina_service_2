@@ -33,16 +33,31 @@ export const categoriesLoader = async function () {
         }));
 
         // Delete existing keys in Redis
-        await asyncDel(CATEGORY_KEY);
-        console.log("Deleted CATEGORY_KEY");
+        redisClient.del(CATEGORY_KEY, (err, response) => {
+            if (err) {
+                console.log('Error deleting CATEGORY_KEY:', err);
+            } else {
+                console.log('Deleted CATEGORY_KEY:', response);
+            }
+        });
         
-        await asyncDel(CATEGORY_SCHEMA_KEY);
-        console.log("Deleted CATEGORY_SCHEMA_KEY");
+        redisClient.del(CATEGORY_SCHEMA_KEY, (err, response) => {
+            if (err) {
+                console.log('Error deleting CATEGORY_SCHEMA_KEY:', err);
+            } else {
+                console.log('Deleted CATEGORY_SCHEMA_KEY:', response);
+            }
+        });
         
-        await asyncDel(CATEGORY_TAGS_KEY);
-        console.log("Deleted CATEGORY_TAGS_KEY");
+        redisClient.del(CATEGORY_TAGS_KEY, (err, response) => {
+            if (err) {
+                console.log('Error deleting CATEGORY_TAGS_KEY:', err);
+            } else {
+                console.log('Deleted CATEGORY_TAGS_KEY:', response);
+            }
+        });
         
-
+        
         // Store categories in Redis
         for (const category of categoriesList) {
             console.log('Storing category:', category._id.toString());
