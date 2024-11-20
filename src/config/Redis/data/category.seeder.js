@@ -46,7 +46,7 @@ export const categoriesLoader = async function () {
         // Store schemas and tags as single entries
         await asyncSet(CATEGORY_SCHEMA_KEY, JSON.stringify(categoriesSchema));
         await asyncSet(CATEGORY_TAGS_KEY, JSON.stringify(categoriesTags));
-
+        console.log("Categories, schemas, and tags loaded into Redis successfully.")
         logger.info("Categories, schemas, and tags loaded into Redis successfully.");
         return categories.length;
     } catch (err) {
