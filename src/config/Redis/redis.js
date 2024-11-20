@@ -1,8 +1,8 @@
 // redisConfig.js
 import Redis from 'ioredis';
 import dotenv from 'dotenv';
-import { categoriesLoader } from './data/category.seeder.js';
-import { advertisementLoader } from './data/advertisement.seeder.js';
+// import { categoriesLoader } from './data/category.seeder.js';
+// import { advertisementLoader } from './data/advertisement.seeder.js';
 
 dotenv.config();
 
@@ -55,12 +55,12 @@ async function connectRedis() {
         console.log('Redis client connected successfully');
         
         console.log(`Redis category loading job executed at ${new Date().toISOString()}`);
-        const categoryCount = await categoriesLoader();
-        console.log(`Number of categories loaded: ${categoryCount}`);
+        // const categoryCount = await categoriesLoader();
+        // console.log(`Number of categories loaded: ${categoryCount}`);
         
         console.log(`Redis advertisement loading job executed at ${new Date().toISOString()}`);
-        const advertisementCount = await advertisementLoader();
-        console.log(`Number of advertisements loaded: ${advertisementCount}`);
+        // const advertisementCount = await advertisementLoader();
+        // console.log(`Number of advertisements loaded: ${advertisementCount}`);
     } catch (err) {
         console.error('Redis connection error:', err);
     }
