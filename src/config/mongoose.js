@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import mongoose from "mongoose";
-import { connectRedis } from './Redis/redis.js'
+// import { connectRedis } from './Redis/redis.js'
 
 export const mongooseConnection = async function () {
     console.log('MongoDB URI:', process.env.MONGODB_URI);
