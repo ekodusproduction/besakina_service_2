@@ -1,4 +1,4 @@
-import Category from "../../../Features/Categories/categoryModel.js";
+import { getDB } from "../../mongodb.js";
 import { logger } from "../../../Middlewares/logger.middleware.js";
 import { asyncSet, asyncDel, asyncGet, asyncHset, asyncHgetall, asyncHget } from "../redis.methods.js";
 
@@ -8,7 +8,7 @@ const CATEGORY_TAGS_KEY = "categoriesTags";
 
 export const categoriesLoader = async function () {
     try {
-        const categories = await Category.find({ is_active: true }).sort({ rank: 1 });
+        const categories = await getDB().collection("Category").find({ is_active: true }).sort({ rank: 1 }).toArray();
         console.log("categories", categories)
         // Extract relevant data
         const categoriesList = categories.map((category) => ({
