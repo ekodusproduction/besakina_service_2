@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import mongoose from "mongoose";
+import { connectRedis } from './src/config/Redis/redis.js';
 
 export const mongooseConnection = async function () {
     console.log('MongoDB URI:', process.env.MONGODB_URI);
@@ -11,6 +12,7 @@ export const mongooseConnection = async function () {
         const db = mongoose.connection.db;
         const collections = await db.listCollections().toArray();
 
+        const redis = connectRedis()
 
         console.log('Connected to MongoDB using Mongoose and reindexed all collections');
     } catch (err) {
