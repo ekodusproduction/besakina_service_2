@@ -9,7 +9,6 @@ const CATEGORY_TAGS_KEY = "categoriesTags";
 export const categoriesLoader = async function () {
     try {
         const categories = await getDB().collection("category").find({ is_active: true }).sort({ rank: 1 }).toArray();
-        console.log("categories", categories)
         // Extract relevant data
         const categoriesList = categories.map((category) => ({
             _id: category._id,
@@ -37,9 +36,13 @@ export const categoriesLoader = async function () {
         await asyncDel(CATEGORY_KEY);
         await asyncDel(CATEGORY_SCHEMA_KEY);
         await asyncDel(CATEGORY_TAGS_KEY);
+        console.log("categoriesList", categoriesList)
+        console.log("categoriesSchema", categoriesSchema)
+        console.log("categoriesTags", categoriesTags)
 
         // Store categories in Redis
         for (const category of categoriesList) {
+            console.log('Storing category:', category._id.toString());
             await asyncHset(CATEGORY_KEY, category._id.toString(), JSON.stringify(category));
         }
 
@@ -50,6 +53,7 @@ export const categoriesLoader = async function () {
         logger.info("Categories, schemas, and tags loaded into Redis successfully.");
         return categories.length;
     } catch (err) {
+        console.log("err", err)
         logger.error("Error loading categories into Redis:", err);
         return 0;
     }
