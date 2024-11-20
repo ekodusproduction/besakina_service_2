@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import path from 'path';
 import helmet from "helmet"; // Security middleware
-import { logger, loggerMiddleware } from './src/Middlewares/logger.middleware.js';
+import { logger } from './src/Middlewares/logger.middleware.js';
 import { ApplicationError } from './src/ErrorHandler/applicationError.js';
 import { sendError } from './src/Utility/response.js';
 //routers
