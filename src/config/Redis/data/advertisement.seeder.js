@@ -1,8 +1,8 @@
-import Category from "../../../Features/Categories/categoryModel";
-import { logger } from "../../../Middlewares/logger.middleware";
-import { getDB } from "../../mongodb";
-import { asyncLrange } from "../redis.methods";
-import { asyncSet, asyncDel, asyncGet, asyncHset, asyncHgetall, asyncHget } from "./redisMethods";
+import Category from "../../../Features/Categories/categoryModel.js";
+import { logger } from "../../../Middlewares/logger.middleware.js";
+import { getDB } from "../../mongodb.js";
+import { asyncLrange } from "../redis.methods.js";
+import { asyncSet, asyncDel, asyncGet, asyncHset, asyncHgetall, asyncHget } from "./redisMethods.js";
 
 const ADVERTISEMENT_HASH_KEY = "advertisements";
 const ADVERTISEMENT_LIST_KEY = "advList"; //for categories :categoryname
