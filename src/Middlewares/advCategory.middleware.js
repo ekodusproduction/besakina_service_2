@@ -1,6 +1,7 @@
-import { checkCategoryById, getTagsByIds } from "../config/Redis/data/category.seeder.js";
+// import { checkCategoryById, getTagsByIds } from "../config/Redis/data/category.seeder.js";
+import { get } from "mongoose";
 import { sendError } from "../Utility/response.js";
-
+import { getDB } from "../config/mongodb.js";
 export const advCategoryValidationMiddleware = async (req, res, next) => {
     try {
         // Validate the advertisement type ID from the request parameters
@@ -10,7 +11,8 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
         }
 
         // Check if the category exists and is active
-        const category = await checkCategoryById(req.body.categoryId)
+        // const category = await checkCategoryById(req.body.categoryId)
+        const category = await getDB().collection("category").find({ is_active: true }).toAraary()
         if (!category) {
             return sendError(res, 'Invalid or inactive categoryId.', 404);
         }
@@ -22,7 +24,7 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
         // Attach category details to the request object for further use
         req.category = category;
         // Attach search tags to the request object for further use
-        req.body.tags = await getTagsByIds(category, req.body.subcategoryId);;
+        // req.body.tags = await getTagsByIds(category, req.body.subcategoryId);;
         next();
     } catch (error) {
         console.error('Error in categoryId:', error);
