@@ -62,12 +62,28 @@ app.use('/api/admin', adminRouter)
 app.use('/api/featured', featuredRouter)
 
 app.use(async (err, req, res, next) => {
-    logger.info(err);
-    console.log("err in global middleware", err)
+    // Log the error details for debugging
+    logger.error('Error occurred', {
+        message: err.message,
+        stack: err.stack,
+        method: req.method,
+        url: req.url
+    });
+
     if (err instanceof ApplicationError) {
-        return await sendError(res, err.message, err.code);
+        // Send a response with the custom error code and message
+        return res.status(err.code || 500).json({
+            success: false,
+            message: err.message,
+            error: err.code || 500
+        });
     } else {
-        return await sendError(res, "Internal server error!", 500);
+        // If it's not an ApplicationError, send a generic internal server error response
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error!",
+            error: 500
+        });
     }
 });
 

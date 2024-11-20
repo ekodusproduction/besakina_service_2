@@ -9,7 +9,7 @@ const CATEGORY_TAGS_KEY = "categoriesTags";
 export const categoriesLoader = async function () {
     try {
         const categories = await Category.find({ is_active: true }).sort({ rank: 1 });
-
+        console.log("categories", categories)
         // Extract relevant data
         const categoriesList = categories.map((category) => ({
             _id: category._id,
