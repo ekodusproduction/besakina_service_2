@@ -28,7 +28,7 @@ export const listCategory = async (req, res, next) => {
         const categories = await getDB()
         .collection("categories")
         .find({ is_active: true })
-        .project({ name: 1, subcategory: 1 }) // Use .project() instead of .select()
+        .project({ name: 1, subcategory: 1 , icon: 1}) // Use .project() instead of .select()
         .sort({ rank: 1 })
         .toArray();
 
