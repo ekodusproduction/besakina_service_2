@@ -14,8 +14,8 @@ const categorySchema = new mongoose.Schema({
     subcategory: [subCategorySchema],
     icon: { type: String },
     rank: { type: Number }, 
-    sellSchema:{type:object},
-    marketingSchema:{type:object}
+    sellSchema:{type:Object},
+    marketingSchema:{type:Object}
 });
 categorySchema.index({  is_active: 1, rank: 1 })
 const Category = mongoose.model("Category", categorySchema);
