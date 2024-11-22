@@ -9,13 +9,7 @@ export const createCategory = async (req, res, next) => {
     try {
         const { name, tags, is_active, icon, subcategory } = req.body;
 
-        const newCategory = new Category({
-            name,
-            tags,
-            is_active,
-            icon,
-            subcategory
-        });
+        const newCategory = new Category(req.body);
 
         const result = await newCategory.save();
 
