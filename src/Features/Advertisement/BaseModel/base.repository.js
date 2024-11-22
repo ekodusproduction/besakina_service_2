@@ -10,9 +10,13 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         console.log("files", files)
         console.log("category", category)
         console.log("schema", schema)
-
+        let model
         requestBody.images = files;
-        const model = Base.discriminator(category, schema);
+        if (schema) {
+            model = Base.discriminator(category, schema);
+        } else {
+            model = Base
+        }
 
         const document = new model(requestBody);
         const result = await document.save();

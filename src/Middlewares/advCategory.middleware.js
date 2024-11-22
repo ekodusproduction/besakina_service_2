@@ -22,7 +22,8 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
             req.schema = category?.marketingSchema;
         }
         // Attach category details to the request object for further use
-        req.category = category;
+        req.categoryId = categoryId;
+
         // Attach search tags to the request object for further use
         // req.body.tags = await getTagsByIds(category, req.body.subcategoryId);;
         next();
