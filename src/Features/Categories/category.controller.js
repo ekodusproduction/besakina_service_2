@@ -7,6 +7,7 @@ import { getDB } from '../../config/mongodb.js';
 
 export const createCategory = async (req, res, next) => {
     try {
+        console.log("body", req.body)
         const newCategory = new Category(req.body);
 
         const result = await newCategory.save();

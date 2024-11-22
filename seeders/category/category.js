@@ -37,7 +37,7 @@ export const addCategories = async (token, baseUrl) => {
             };
 
             const response = await axios.request(config);
-            console.log(JSON.stringify(response.data));
+            console.log(JSON.stringify(response.data.data));
         }
     } catch (error) {
         console.log(error);
