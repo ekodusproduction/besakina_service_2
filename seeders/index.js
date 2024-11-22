@@ -5,12 +5,13 @@ import { addHospitals } from "./hospitals.seeder.js";
 import { addPlans } from "./plan.seeder.js";
 import { addProperties } from "./property.seeder.js";
 import { addVehicles } from "./vehicles.seeder.js";
-import 
+import { addCategories } from "./category/category.js";
+
 export const seeder = async () => {
     try {
-        const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjY1MDg3N2E3MzcwYzZlZGZmNjJjZTg5IiwicGxhbl9pZCI6bnVsbCwiaWF0IjoxNzE4NDMwMzA5LCJleHAiOjE3MjEwMjIzMDl9.yD9Bt56MTim5v4RydQS1PXrTqBCYG5mWuWxJtBATZwY`
+        const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjczYzZiZTJiMDFmZDA0MTgwYzk0ZjBiIiwicGxhbl9pZCI6bnVsbCwiaWF0IjoxNzMyMjc0NjI4LCJleHAiOjE3NjM4MTA2Mjh9.oOrEFSSi1rkgsM3OrZvl7MR6EcNbP_MZ2DbJfE5wuKk`
         const baseUrl = 'besakina.com'
-        await addPlans(token, baseUrl);
+        await addCategories(token, baseUrl);
         // await addProperties(token, baseUrl);
         // await addVehicles(token, baseUrl)
         // await addDoctors(token, baseUrl)
