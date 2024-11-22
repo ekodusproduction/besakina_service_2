@@ -1,4 +1,4 @@
-import { categories } from "./besakina_dev.category";
+import { categories } from "./besakina_dev.category.js";
 import axios from 'axios';
 import FormData from 'form-data';
 import fs from 'fs';
