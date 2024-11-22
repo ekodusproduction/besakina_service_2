@@ -7,13 +7,9 @@ import Base from "./base.model.js";
 export const addAdvertisement = async (requestBody, files, category, schema) => {
     try {
         requestBody.images = files;
-        const advInfo = requestBody.advInfo;
-        const userInfo = requestBody.userInfo;
-        advInfo.user = userInfo;
-        const user = await addUserDetails(requestBody.user, userInfo)
-        const model = Base.discriminator(category._id, schema);
+        const model = Base.discriminator(category, schema);
 
-        const document = new model(advInfo);
+        const document = new model(requestBody);
         const result = await document.save();
 
         if (!result) {
