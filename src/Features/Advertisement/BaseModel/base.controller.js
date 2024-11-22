@@ -4,7 +4,7 @@ import { logger } from "../../../Middlewares/logger.middleware.js";
 
 export const addAdvertisement = async (req, res, next) => {
     try {
-        req.body.advInfo.user = req.user
+        req.body.user = req.user
         const category = req.category;
         const schema = req.schema;
         const result = await repository.addAdvertisement(req.body, req.images, category, schema);
