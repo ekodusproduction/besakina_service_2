@@ -28,7 +28,7 @@ export const addCategories = async (token, baseUrl) => {
             const config = {
                 method: 'post',
                 maxBodyLength: Infinity,
-                url: `http://${baseUrl}/dev/api/category`,
+                url: `https://${baseUrl}/dev/api/category`,
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     ...data.getHeaders()

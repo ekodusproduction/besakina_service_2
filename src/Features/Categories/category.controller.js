@@ -1,7 +1,7 @@
 
 // import { getAllCategoryList } from '../../config/Redis/data/category.seeder.js';
 import { sendError, sendResponse } from '../../Utility/response.js';
-import Category from './categoryModel.js';
+import Category from './category.model.js';
 import { ApplicationError } from '../../ErrorHandler/applicationError.js';
 import { getDB } from '../../config/mongodb.js';
 
@@ -38,7 +38,7 @@ export const listCategory = async (req, res, next) => {
         .project({ name: 1, subcategory: 1 }) // Use .project() instead of .select()
         .sort({ rank: 1 })
         .toArray();
-        
+
         if (!categories.length) {
             return await sendError(res, 'Categories not found', 404);
         }
