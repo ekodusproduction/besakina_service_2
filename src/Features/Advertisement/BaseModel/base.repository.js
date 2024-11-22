@@ -6,6 +6,11 @@ import Base from "./base.model.js";
 
 export const addAdvertisement = async (requestBody, files, category, schema) => {
     try {
+        console.log("body", requestBody)
+        console.log("files", files)
+        console.log("category", category)
+        console.log("schema", schema)
+
         requestBody.images = files;
         const model = Base.discriminator(category, schema);
 
