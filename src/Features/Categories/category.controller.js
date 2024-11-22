@@ -7,14 +7,14 @@ import { getDB } from '../../config/mongodb.js';
 
 export const createCategory = async (req, res, next) => {
     try {
-        const { name, tags, is_active, icon, subCategories } = req.body;
+        const { name, tags, is_active, icon, subcategory } = req.body;
 
         const newCategory = new Category({
             name,
             tags,
             is_active,
             icon,
-            subCategories
+            subcategory
         });
 
         const result = await newCategory.save();
