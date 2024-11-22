@@ -13,7 +13,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         let model
         requestBody.images = files;
         if (schema) {
-            model = Base.discriminator(category, schema);
+            model = Base.discriminator(category._id, schema);
         } else {
             model = Base
         }
