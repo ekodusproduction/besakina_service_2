@@ -32,8 +32,13 @@ export const createCategory = async (req, res, next) => {
 export const listCategory = async (req, res, next) => {
     try {
         // const categories = await getAllCategoryList()
-        const categories = await getDB().collection("categories").find({ is_active: true }).select("name subcategory").sort({ rank: 1 }).toArray();
-
+        const categories = await getDB()
+        .collection("categories")
+        .find({ is_active: true })
+        .project({ name: 1, subcategory: 1 }) // Use .project() instead of .select()
+        .sort({ rank: 1 })
+        .toArray();
+        
         if (!categories.length) {
             return await sendError(res, 'Categories not found', 404);
         }
