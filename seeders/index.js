@@ -5,6 +5,7 @@ import { addHospitals } from "./hospitals.seeder.js";
 import { addPlans } from "./plan.seeder.js";
 import { addProperties } from "./property.seeder.js";
 import { addVehicles } from "./vehicles.seeder.js";
+import 
 export const seeder = async () => {
     try {
         const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjY1MDg3N2E3MzcwYzZlZGZmNjJjZTg5IiwicGxhbl9pZCI6bnVsbCwiaWF0IjoxNzE4NDMwMzA5LCJleHAiOjE3MjEwMjIzMDl9.yD9Bt56MTim5v4RydQS1PXrTqBCYG5mWuWxJtBATZwY`

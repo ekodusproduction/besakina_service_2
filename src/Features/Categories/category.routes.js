@@ -5,7 +5,7 @@ import { jwtAuth } from "../../Middlewares/auth.middleware.js";
 // import { login, sendOtp } from "./users.controller.js";
 const categoryRouter = Router()
 
-categoryRouter.post("/", jwtAuth, fileUpload, createCategory)
+categoryRouter.post("/", jwtAuth, createCategory)
 categoryRouter.get("/", listCategory)
 categoryRouter.get("/:categoryId", listSubCategory)
 categoryRouter.put("/:categoryId", jwtAuth, fileUpload, UpdateCategory)
