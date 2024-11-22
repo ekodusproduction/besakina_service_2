@@ -1,89 +1,162 @@
-// import Category from "../../../Features/Categories/categoryModel.js";
-// import { logger } from "../../../Middlewares/logger.middleware.js";
-// import { getDB } from "../../mongodb.js";
-// import { asyncSet, asyncDel, asyncGet, asyncHset, asyncHgetall, asyncHget } from "../redis.methods.js";
+// Helper method to delete a key if it exists
+const asyncDel = async (key) => {
+    const exists = await redis.exists(key);
+    if (exists) {
+        await redis.del(key);
+    }
+};
 
-// const ADVERTISEMENT_HASH_KEY = "advertisements";
-// const ADVERTISEMENT_LIST_KEY = "advList"; //for categories :categoryname
+// Helper method to set JSON data in Redis
+const asyncJsonSet = async (key, path, value) => {
+    await redis.json.set(key, path, value);
+};
 
-// export const advertisementLoader = async function () {
-//     try {
-//         const advertisement = await getDB().collection("advertisement").find({ is_active: true });
+// Helper method to get JSON data from Redis
+const asyncJsonGet = async (key, path) => {
+    return await redis.json.get(key, { path });
+};
 
-//         // Extract relevant data
-//         const categories = await Category.find({ is_active: true }).sort({ rank: 1 });
+/**
+ * Fetch all active categories from MongoDB.
+ */
+const fetchActiveCategories = async () => {
+    return await Category.find({ is_active: true }).sort({ rank: 1 });
+};
 
-//         // Delete existing keys in Redis
-//         await asyncDel(ADVERTISEMENT_LIST_KEY);
-//         await asyncDel(ADVERTISEMENT_HASH_KEY);
+/**
+ * Fetch advertisements based on a query from MongoDB in batches.
+ */
+const fetchAdvertisementsInBatches = async (query, batchSize = 100) => {
+    const cursor = getDB().collection("advertisement").find(query).sort({ created_at: -1 });
+    let batch = [];
+    const results = [];
 
-//         // Store categories in Redis
-//         for (const category of categories) {
-//             await asyncDel(`${ADVERTISEMENT_LIST_KEY}:${category}`);
-//             const advertisementList = await getDB().collection("advertisement").find({ is_active: true, advType: category }).sort({ created_at: -1 });
-//             await asyncLpush(`${ADVERTISEMENT_LIST_KEY}:${category}`, adv._id.toString(), JSON.stringify(advertisementList));
-//         }
-//         for (const adv of advertisement) {
-//             await asyncHset(ADVERTISEMENT_HASH_KEY, adv._id.toString(), JSON.stringify(adv));        
-//         }
-//         await asyncLpush(`${ADVERTISEMENT_LIST_KEY}`, JSON.stringify(advertisement));
-//         logger.info("Advertisements loaded into Redis successfully.");
-//         return categories.length;
-//     } catch (err) {
-//         logger.error("Error loading categories into Redis:", err);
-//         return 0;
-//     }
-// };
+    while (await cursor.hasNext()) {
+        batch.push(await cursor.next());
+        if (batch.length === batchSize) {
+            results.push(...batch);
+            batch = [];
+        }
+    }
 
-// // Fetch a single category by ID
-// export const checkAdvById = async function (id) {
-//     try {
-//         const adv = await asyncHget(ADVERTISEMENT_HASH_KEY, id);
-//         return adv ? JSON.parse(adv) : false;
-//     } catch (err) {
-//         logger.error(`Error fetching category with id ${id}:`, err);
-//         return null;
-//     }
-// };
+    if (batch.length > 0) {
+        results.push(...batch);
+    }
 
-// // Fetch all categories
-// export const getAllAdvList = async function () {
-//     try {
-//         const categories = await asyncHgetall(ADVERTISEMENT_LIST_KEY);
-//         return Object.entries(categories).map(([key, value]) => ({
-//             _id: key,
-//             ...JSON.parse(value),
-//         }));
-//     } catch (err) {
-//         logger.error("Error fetching all categories:", err);
-//         return [];
-//     }
-// };
+    return results;
+};
 
-// // Fetch all tags or tags for a specific category
-// export const getCategoryTags = async function (id = null) {
-//     try {
-//         const tagsData = await asyncGet(CATEGORY_TAGS_KEY);
-//         if (!tagsData) return false;
+/**
+ * Store advertisements into Redis in batches.
+ */
+const storeAdvertisementsInRedis = async (key, advertisements, batchSize = 100) => {
+    let currentData = await asyncJsonGet(key, '$') || [];
+    for (let i = 0; i < advertisements.length; i += batchSize) {
+        const batch = advertisements.slice(i, i + batchSize);
+        currentData = [...currentData, ...batch];
+        await asyncJsonSet(key, '$', currentData);
+    }
+};
 
-//         const tags = JSON.parse(tagsData);
-//         return id ? tags.find((tag) => tag._id === id) : tags;
-//     } catch (err) {
-//         logger.error(`Error fetching tags with id ${id}:`, err);
-//         return null;
-//     }
-// };
+/**
+ * Load advertisements for a specific category into Redis.
+ */
+const loadAdvertisementsForCategory = async (category, batchSize = 100) => {
+    const categoryKey = `${ADVERTISEMENT_LIST_KEY}:${category._id}`;
+    await asyncDel(categoryKey); // Delete the category-specific key in Redis
 
-// // Fetch all schemas or schema for a specific category
-// export const getCategorySchema = async function (id = null) {
-//     try {
-//         const schemaData = await asyncGet(CATEGORY_SCHEMA_KEY);
-//         if (!schemaData) return false;
+    const advertisements = await fetchAdvertisementsInBatches({ is_active: true, advType: category.name }, batchSize);
+    await storeAdvertisementsInRedis(categoryKey, advertisements, batchSize);
+};
 
-//         const schemas = JSON.parse(schemaData);
-//         return id ? schemas.find((schema) => schema._id === id) : schemas;
-//     } catch (err) {
-//         logger.error(`Error fetching schema with id ${id}:`, err);
-//         return null;
-//     }
-// };
+/**
+ * Load all advertisements into Redis.
+ */
+const loadAllAdvertisements = async (batchSize = 100) => {
+    await asyncDel(ADVERTISEMENT_LIST_KEY); // Delete the main advertisements key
+
+    const advertisements = await fetchAdvertisementsInBatches({ is_active: true }, batchSize);
+    await storeAdvertisementsInRedis(ADVERTISEMENT_LIST_KEY, advertisements, batchSize);
+};
+
+/**
+ * Load featured advertisements into Redis.
+ */
+const loadFeaturedAdvertisements = async (batchSize = 100) => {
+    await asyncDel(FEATURED_LIST_KEY); // Delete the featured advertisements key
+
+    const featuredAdvertisements = await fetchAdvertisementsInBatches({ is_active: true, featured: true }, batchSize);
+    await storeAdvertisementsInRedis(FEATURED_LIST_KEY, featuredAdvertisements, batchSize);
+};
+
+/**
+ * Main loader function to load all advertisements and categories into Redis.
+ */
+export const advertisementListLoader = async () => {
+    try {
+        const categories = await fetchActiveCategories();
+
+        // Load advertisements for each category
+        for (const category of categories) {
+            await loadAdvertisementsForCategory(category);
+        }
+
+        // Load all advertisements and featured advertisements
+        await loadAllAdvertisements();
+        await loadFeaturedAdvertisements();
+
+        logger.info("Advertisements list loaded into Redis successfully.");
+        return categories.length;
+    } catch (err) {
+        logger.error("Error loading advertisements list into Redis:", err);
+        return 0;
+    }
+};
+
+/**
+ * Load individual advertisements into Redis hash for fast lookup.
+ */
+export const advertisementHashLoader = async () => {
+    try {
+        const advertisements = await getDB().collection("advertisement").find({ is_active: true }).toArray();
+
+        await redis.del(ADVERTISEMENT_HASH_KEY); // Delete existing advertisements hash key
+
+        for (const adv of advertisements) {
+            const advId = adv._id.toString();
+            await redis.hSet(ADVERTISEMENT_HASH_KEY, advId, JSON.stringify(adv));
+        }
+
+        logger.info("Advertisements loaded into Redis Hash successfully.");
+        return advertisements.length;
+    } catch (err) {
+        logger.error("Error loading advertisements into Redis Hash:", err);
+        return 0;
+    }
+};
+
+/**
+ * Fetch a single advertisement by ID from Redis.
+ */
+export const fetchAdvById = async (id) => {
+    try {
+        const adv = await redis.hGet(ADVERTISEMENT_HASH_KEY, id);
+        return adv ? JSON.parse(adv) : false;
+    } catch (err) {
+        logger.error(`Error fetching advertisement with id ${id}:`, err);
+        return null;
+    }
+};
+
+/**
+ * Fetch all advertisements from Redis.
+ */
+export const getAllAdvList = async () => {
+    try {
+        const advList = await asyncJsonGet(ADVERTISEMENT_LIST_KEY, '$');
+        return advList || [];
+    } catch (err) {
+        logger.error("Error fetching all advertisements:", err);
+        return [];
+    }
+};
