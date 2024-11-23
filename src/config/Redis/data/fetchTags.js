@@ -3,7 +3,7 @@ import { getDB } from "../../mongodb.js"; // Import your MongoDB connection util
 // Function to get category data with combined tags from category and subcategory
 export const getCategoryWithTags = async function () {
     try {
-        const result = await getDB().collection("category").aggregate([
+        const result = await getDB().collection("categories").aggregate([
             {
                 $match: { is_active: true }  // Only active categories
             },

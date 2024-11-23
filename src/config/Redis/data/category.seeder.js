@@ -90,7 +90,8 @@ const categoryTagsLoader = async function () {
         await asyncDel(CATEGORY_TAGS_KEY); // Clear existing tags
 
         for (const category of categoriesWithTags) {
-            await asyncJsonSet(CATEGORY_TAGS_KEY, `$.${category._id.toString()}`, category.tags);
+            console.log("categories", category)
+            await asyncJsonSet(CATEGORY_TAGS_KEY, `$.${category._id}`, category.tags);
         }
 
         logger.info("Category tags loaded into Redis successfully.");
