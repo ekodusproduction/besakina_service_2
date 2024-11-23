@@ -21,21 +21,44 @@ const redis = new Redis({
     port: redisPort,
     reconnectOnError: (err) => {
         console.error('Redis connection error:', err);
-        // Reconnect only for certain errors (e.g., ECONNREFUSED)
         if (err.message.includes('ECONNREFUSED')) {
             return true;
         }
-        return false; // Other errors won't trigger reconnection by default
+        return false;
     },
     retryStrategy: (times) => {
-        const delay = Math.min(times * 100, 3000); // Exponential backoff with cap
+        const delay = Math.min(times * 100, 3000); // Exponential backoff
         console.log(`Retrying Redis connection: attempt ${times}, delay ${delay}ms`);
         return delay;
     },
 });
 
-redis.on('connect', () => {
+// Function to log connection status
+function connectRedis() {
+    console.log('Connecting to Redis...');
+}
+
+// Call loaders when Redis is connected
+redis.on('connect', async () => {
     console.log('Redis client connected');
+    // Call data loading functions once Redis is connected
+    console.log(`Redis category loading job executed at ${new Date().toISOString()}`);
+    const categoryCount = await categoryListLoader();
+    console.log(`Number of categories loaded: ${categoryCount}`);
+
+    const categorySchemaCount = await categorySchemaLoader();
+    console.log(`Number of category schema loaded: ${categorySchemaCount}`);
+
+    const categoryTagsCount = await categoryTagsLoader();
+    console.log(`Number of category tags loaded: ${categoryTagsCount}`);
+
+    console.log(`Redis advertisement loading job executed at ${new Date().toISOString()}`);
+
+    const advertisementCount = await advertisementListLoader();
+    console.log(`Number of advertisements loaded: ${advertisementCount}`);
+
+    const advertisementHashCount = await advertisementHashLoader();
+    console.log(`Number of advertisement hashes loaded: ${advertisementHashCount}`);
 });
 
 redis.on('ready', () => {
@@ -54,47 +77,5 @@ redis.on('reconnecting', () => {
     console.log('Reconnecting to Redis...');
 });
 
-// Function to check Redis connection
-async function connectRedis() {
-    try {
-        if (redis.status === 'ready') {
-            console.log('Redis client is already connected');
-            return; // No need to connect again
-        }
-
-        if (redis.status === 'connecting') {
-            console.log('Redis client is already in the process of connecting');
-            return; // Don't attempt to connect again while connecting
-        }
-
-        console.log('Attempting to connect to Redis...');
-        if (redis.status != 'ready') {
-            await redis.connect();
-            console.log('Redis client is already connected');
-            // No need to connect again
-        }
-
-        console.log('Redis client connected successfully. Ping response:', await redis.ping());
-
-        // Example of loading data using Redis if needed:
-        console.log(`Redis category loading job executed at ${new Date().toISOString()}`);
-        const categoryCount = await categoryListLoader();
-        console.log(`Number of categories loaded: ${categoryCount}`);
-        const categorySchemaCount = await categorySchemaLoader();
-        console.log(`Number of category schema loaded: ${categorySchemaCount}`);
-
-        const categoryTagsCount = await categoryTagsLoader();
-        console.log(`Number of category tags loaded: ${categoryTagsCount}`);
-        console.log(`Redis advertisement loading job executed at ${new Date().toISOString()}`);
-
-        const advertisementCount = await advertisementListLoader();
-        console.log(`Number of advertisements loaded: ${advertisementCount}`);
-        const advertisementHashCount = await advertisementHashLoader();
-        console.log(`Number of advertisement hashes loaded: ${advertisementHashCount}`);
-    } catch (err) {
-        console.error('Redis connection error:', err);
-    }
-}
-
-
+// Export redis client and connectRedis function
 export { redis, connectRedis };
