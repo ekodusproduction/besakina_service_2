@@ -21,6 +21,8 @@ export const mongooseConnection = async function () {
         await mongoose.connect(uri);
         const db = mongoose.connection.db;
         const collections = await db.listCollections().toArray();
+        console.log('Connected to MongoDB using Mongoose and reindexed all collections');
+
         redis.on('ready', async () => {
 
             console.log('Redis client connected');
@@ -45,7 +47,6 @@ export const mongooseConnection = async function () {
 
         })
 
-        console.log('Connected to MongoDB using Mongoose and reindexed all collections');
     } catch (err) {
         console.error('Failed to connect to MongoDB using Mongoose', err);
         throw err;
