@@ -20,6 +20,7 @@ const redisPassword = process.env.REDIS_PASSWORD;
 const config = {
     host: redisHost,
     port: redisPort,
+    password: redisPassword,  
     reconnectOnError: (err) => {
         console.error('Redis connection error:', err);
         if (err.message.includes('ECONNREFUSED')) {
@@ -32,7 +33,7 @@ const config = {
         console.log(`Retrying Redis connection: attempt ${times}, delay ${delay}ms`);
         return delay;
     },
-}
+};
 
 let redis
 // Function to log connection status
