@@ -6,11 +6,11 @@ import {
     categoryListLoader,
     categorySchemaLoader,
     categoryTagsLoader
-} from './data/category.seeder.js';
+} from './Redis/data/category.seeder.js';
 import {
     advertisementListLoader,
     advertisementHashLoader
-} from './data/advertisement.seeder.js';
+} from './Redis/data/advertisement.seeder.js';
 
 export const mongooseConnection = async function () {
     console.log('MongoDB URI:', process.env.MONGODB_URI);
