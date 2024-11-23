@@ -1,14 +1,6 @@
 import Redis from 'ioredis';
 import dotenv from 'dotenv';
-import {
-    categoryListLoader,
-    categorySchemaLoader,
-    categoryTagsLoader
-} from './data/category.seeder.js';
-import {
-    advertisementListLoader,
-    advertisementHashLoader
-} from './data/advertisement.seeder.js';
+
 
 dotenv.config();
 
@@ -78,4 +70,4 @@ redis.on('reconnecting', () => {
 });
 
 // Export redis client and connectRedis function
-export { redis, connectRedis };
+export { redis }
