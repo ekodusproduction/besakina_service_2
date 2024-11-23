@@ -29,10 +29,6 @@ const redis = new Redis({
 
 // Call loaders when Redis is connected
 
-
-redis.on('ready', () => {
-    console.log('Redis client ready');
-});
 redis.on('connect', async () => {
     console.log('Redis client connected');
 
