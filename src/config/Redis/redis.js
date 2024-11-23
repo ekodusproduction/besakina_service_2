@@ -52,7 +52,14 @@ const connectRedis = async function () {
             console.log('Redis client disconnected');
         });
         redis.on('ready', async () => {
-
+            redis.defineCommand('json.set', {
+                numberOfKeys: 1,
+                lua: `
+                  local path = KEYS[1]
+                  local value = ARGV[1]
+                  return redis.call('JSON.SET', path, '.', value)
+                `
+              });
             console.log('Redis client is Ready ');
             // Call data loading functions once Redis is connected
             console.log(`Redis category loading job executed at ${new Date().toISOString()}`);
@@ -77,10 +84,13 @@ const connectRedis = async function () {
         redis.on('reconnecting', () => {
             console.log('Reconnecting to Redis...');
         });
+ 
     } catch (err) {
         console.error('Redis Error:', err);
     }
 }
+
+  
 // Call loaders when Redis is connected
 
 
