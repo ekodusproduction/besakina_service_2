@@ -57,15 +57,18 @@ redis.on('reconnecting', () => {
 // Function to check Redis connection
 async function connectRedis() {
     try {
-        console.log('Attempting to connect to Redis...');
-
-        // Explicitly call redis.connect()
-        await redis.connect();
-
-        if (!redis.isReady) {
-            console.error('Redis client is not ready after connection attempt!');
-            return;
+        if (redis.status === 'ready') {
+            console.log('Redis client is already connected');
+            return; // No need to connect again
         }
+
+        if (redis.status === 'connecting') {
+            console.log('Redis client is already in the process of connecting');
+            return; // Don't attempt to connect again while connecting
+        }
+
+        console.log('Attempting to connect to Redis...');
+        await redis.connect();
 
         console.log('Redis client connected successfully. Ping response:', await redis.ping());
 
