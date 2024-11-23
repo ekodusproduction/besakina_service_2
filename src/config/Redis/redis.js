@@ -26,31 +26,11 @@ const redis = new Redis({
 });
 
 // Function to log connection status
-function connectRedis() {
-    console.log('Connecting to Redis...');
-}
 
 // Call loaders when Redis is connected
 redis.on('connect', async () => {
     console.log('Redis client connected');
-    // Call data loading functions once Redis is connected
-    console.log(`Redis category loading job executed at ${new Date().toISOString()}`);
-    const categoryCount = await categoryListLoader();
-    console.log(`Number of categories loaded: ${categoryCount}`);
-
-    const categorySchemaCount = await categorySchemaLoader();
-    console.log(`Number of category schema loaded: ${categorySchemaCount}`);
-
-    const categoryTagsCount = await categoryTagsLoader();
-    console.log(`Number of category tags loaded: ${categoryTagsCount}`);
-
-    console.log(`Redis advertisement loading job executed at ${new Date().toISOString()}`);
-
-    const advertisementCount = await advertisementListLoader();
-    console.log(`Number of advertisements loaded: ${advertisementCount}`);
-
-    const advertisementHashCount = await advertisementHashLoader();
-    console.log(`Number of advertisement hashes loaded: ${advertisementHashCount}`);
+    
 });
 
 redis.on('ready', () => {

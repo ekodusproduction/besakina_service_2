@@ -22,7 +22,7 @@ export const baseSchema = new mongoose.Schema({
     map_location: { type: String },
     latitude: { type: Number },
     longitude: { type: Number },
-    verified: { type: Boolean, default: false },
+    verified: { type: Boolean, default: true },
     is_active: { type: Boolean, default: true },
     tags: [{ type: String, default: null }],
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },

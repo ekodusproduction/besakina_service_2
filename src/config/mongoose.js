@@ -7,6 +7,7 @@ import {
     categorySchemaLoader,
     categoryTagsLoader
 } from './Redis/data/category.seeder.js';
+
 import {
     advertisementListLoader,
     advertisementHashLoader
