@@ -1,7 +1,14 @@
 import Redis from 'ioredis';
 import dotenv from 'dotenv';
-// import { categoriesLoader } from './data/category.seeder.js';
-// import { advertisementLoader } from './data/advertisement.seeder.js';
+import {
+    categoryListLoader,
+    categorySchemaLoader,
+    categoryTagsLoader
+} from './data/category.seeder.js';
+import {
+    advertisementListLoader,
+    advertisementHashLoader
+} from './data/advertisement.seeder.js';
 
 dotenv.config();
 
@@ -54,15 +61,22 @@ async function connectRedis() {
         console.log('Connecting to Redis...');
         await redis.ping(); // Ping Redis to check if it's available
         console.log('Redis client connected successfully');
-        
+
         // Example of loading data using Redis if needed:
         console.log(`Redis category loading job executed at ${new Date().toISOString()}`);
-        // const categoryCount = await categoriesLoader();
-        // console.log(`Number of categories loaded: ${categoryCount}`);
-        
+        const categoryCount = await categoryListLoader()
+        console.log(`Number of categories loaded: ${categoryCount}`);
+        const categorySchemaCount = await categorySchemaLoader()
+        console.log(`Number of category schema loaded: ${categorySchemaCount}`);
+
+        const categoryTagsCount = await categoryTagsLoader()
+        console.log(`Number of categorY TAGS loaded: ${categoryTagsCount}`);
         console.log(`Redis advertisement loading job executed at ${new Date().toISOString()}`);
-        // const advertisementCount = await advertisementLoader();
-        // console.log(`Number of advertisements loaded: ${advertisementCount}`);
+
+        const advertisementCount = await advertisementListLoader();
+        console.log(`Number of advertisements loaded: ${advertisementCount}`);
+        const advertisementHashCount = await advertisementHashLoader();
+        console.log(`Number of advertisements loaded: ${advertisementHashCount}`);
     } catch (err) {
         console.error('Redis connection error:', err);
     }

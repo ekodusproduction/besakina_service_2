@@ -7,7 +7,9 @@ const CATEGORY_LIST_KEY = "categoriesList";
 const CATEGORY_SCHEMA_KEY = "categoriesSchema";
 const CATEGORY_TAGS_KEY = "categoriesTags";
 
-// Helper method to delete a key if it exists
+/**
+ * Helper to delete a Redis key if it exists.
+ */
 const asyncDel = async (key) => {
     const exists = await redis.exists(key);
     if (exists) {
@@ -15,32 +17,34 @@ const asyncDel = async (key) => {
     }
 };
 
-// Helper method to set JSON array data in Redis
-const asyncJsonArraySet = async (key, value) => {
-    await redis.json.set(key, '$', value);  // Store as JSON array
+/**
+ * Helper to set JSON data in Redis.
+ */
+const asyncJsonSet = async (key, path, value) => {
+    await redis.json.set(key, path, value);
 };
 
-// Helper method to set JSON object data in Redis
-const asyncJsonObjectSet = async (key, path, value) => {
-    await redis.json.set(key, path, value);  // Store as JSON object
-};
-
-// Helper method to get JSON data from Redis
-const asyncJsonGet = async (key, path) => {
+/**
+ * Helper to get JSON data from Redis.
+ */
+const asyncJsonGet = async (key, path = '$') => {
     return await redis.json.get(key, { path });
 };
 
-// Category List Loader (for listing categories with subcategories and schemas)
-export const categoryListLoader = async function () {
+/**
+ * Load all active categories into Redis as a JSON array.
+ */
+const categoryListLoader = async function () {
     try {
-        const categoriesList = await getDB().collection("category").find({ is_active: true }).select("name icon subcategory").sort({ rank: 1 }).toArray();
-        // Get categories with combined tags
-        // Extract relevant data for categories
-        // Delete existing keys in Redis
-        await asyncDel(CATEGORY_LIST_KEY);
+        const categoriesList = await getDB()
+            .collection("category")
+            .find({ is_active: true })
+            .project({ name: 1, icon: 1, subcategory: 1, rank: 1 })
+            .sort({ rank: 1 })
+            .toArray();
 
-        // Store categories as a JSON array in Redis
-        await asyncJsonArraySet(CATEGORY_LIST_KEY, categoriesList);
+        await asyncDel(CATEGORY_LIST_KEY); // Clear existing data
+        await asyncJsonSet(CATEGORY_LIST_KEY, '$', categoriesList);
 
         logger.info("Categories list loaded into Redis successfully.");
         return categoriesList.length;
@@ -50,57 +54,70 @@ export const categoryListLoader = async function () {
     }
 };
 
-// Category Schema Loader (for loading categories with schemas in Redis)
-export const categorySchemaLoader = async function () {
+/**
+ * Load schemas for all categories into Redis as JSON objects.
+ */
+const categorySchemaLoader = async function () {
     try {
-        const categoriesList = await getDB().collection("category").find({ is_active: true }).select("subcategory sellsSchema marketingSchema").sort({ rank: 1 }).toArray();
-        // Loop through categories to store schemas in Redis
+        const categoriesList = await getDB()
+            .collection("category")
+            .find({ is_active: true })
+            .project({ subcategory: 1, sellsSchema: 1, marketingSchema: 1, rank: 1 })
+            .sort({ rank: 1 })
+            .toArray();
+
+        await asyncDel(CATEGORY_SCHEMA_KEY); // Clear existing data
+
         for (const category of categoriesList) {
-            await asyncJsonObjectSet(CATEGORY_SCHEMA_KEY, `$.${category._id.toString()}`, category);
+            await asyncJsonSet(CATEGORY_SCHEMA_KEY, `$.${category._id.toString()}`, category);
         }
 
-        logger.info("Categories schemas loaded into Redis successfully.");
+        logger.info("Category schemas loaded into Redis successfully.");
     } catch (err) {
-        logger.error(`Error loading category schemas: ${err}`);
+        logger.error("Error loading category schemas into Redis:", err);
         return false;
     }
 };
 
-// Category Tags Loader (for fetching category/subcategory tags in one go)
-export const categoryTagsLoader = async function () {
+/**
+ * Load category tags into Redis as JSON objects.
+ */
+const categoryTagsLoader = async function () {
     try {
         const categoriesWithTags = await getCategoryWithTags();
         if (!categoriesWithTags) return [];
 
-        // Delete existing tags in Redis before setting new ones
-        await asyncDel(CATEGORY_TAGS_KEY);
+        await asyncDel(CATEGORY_TAGS_KEY); // Clear existing tags
 
-        // Store tags data as JSON objects in Redis
         for (const category of categoriesWithTags) {
-            await asyncJsonObjectSet(CATEGORY_TAGS_KEY, `$.${category._id.toString()}`, category.tags);
+            await asyncJsonSet(CATEGORY_TAGS_KEY, `$.${category._id.toString()}`, category.tags);
         }
 
         logger.info("Category tags loaded into Redis successfully.");
         return categoriesWithTags.length;
     } catch (err) {
-        logger.error(`Error fetching category tags: ${err.message}`);
+        logger.error("Error loading category tags into Redis:", err);
         return [];
     }
 };
 
-// Fetch a single category by ID
-export const checkCategoryById = async function (id) {
+/**
+ * Fetch a single category by ID.
+ */
+const checkCategoryById = async function (id) {
     try {
         const category = await asyncJsonGet(CATEGORY_LIST_KEY, `$.${id}`);
-        return category || false;
+        return category || null;
     } catch (err) {
         logger.error(`Error fetching category with id ${id}:`, err);
         return null;
     }
 };
 
-// Fetch all categories
-export const getAllCategoryList = async function () {
+/**
+ * Fetch all categories from Redis.
+ */
+const getAllCategoryList = async function () {
     try {
         const categories = await asyncJsonGet(CATEGORY_LIST_KEY, '$');
         return categories || [];
@@ -110,44 +127,45 @@ export const getAllCategoryList = async function () {
     }
 };
 
-// Fetch all tags or tags for a specific category
-export const getTagsByIds = async function (category, subCategoryId = []) {
+/**
+ * Fetch tags for a specific category or subcategories.
+ */
+const getTagsByIds = async function (category, subCategoryId = []) {
     try {
-        // Initialize a set to hold tags (sets automatically handle duplicates)
-        const tagsSet = new Set([...category.tags]);
+        const tagsSet = new Set(category.tags || []);
 
-        // If subCategoryId is provided and it's an array with elements
-        if (subCategoryId && subCategoryId.length > 0) {
-            // Loop through the provided subcategory IDs
-            for (const subId of subCategoryId) {
-                const subCategoryKey = `${category._id}:${subId}`;
-                // Try fetching the tags for the subcategory from Redis
-                const subTags = await asyncJsonGet(CATEGORY_TAGS_KEY, `$.${subCategoryKey}`);
-                if (subTags) {
-                    // Add subcategory tags to the set (Set will avoid duplicates)
-                    subTags.forEach(tag => tagsSet.add(tag));
-                }
-            }
+        for (const subId of subCategoryId) {
+            const subTags = await asyncJsonGet(CATEGORY_TAGS_KEY, `$.${category._id}:${subId}`);
+            if (subTags) subTags.forEach(tag => tagsSet.add(tag));
         }
 
-        // Convert the set back to an array and return
-        return [...tagsSet];
+        return Array.from(tagsSet);
     } catch (err) {
-        logger.error(`Error fetching tags for categoryId ${category._id}: ${err.message}`);
+        logger.error(`Error fetching tags for categoryId ${category._id}:`, err);
         return [];
     }
 };
 
-// Fetch all schemas or schema for a specific category
-export const getCategorySchema = async function (id = null) {
+/**
+ * Fetch category schemas from Redis.
+ */
+const getCategorySchema = async function (id = null) {
     try {
-        const schemaData = await asyncJsonGet(CATEGORY_SCHEMA_KEY, '$');
-        if (!schemaData) return false;
-
-        const schemas = schemaData;
-        return id ? schemas.find((schema) => schema._id === id) : schemas;
+        const schemas = await asyncJsonGet(CATEGORY_SCHEMA_KEY, '$');
+        return id ? schemas?.[id] || null : schemas;
     } catch (err) {
         logger.error(`Error fetching category schema with id ${id}:`, err);
         return null;
     }
+};
+
+// Exporting functions
+export {
+    categoryListLoader,
+    categorySchemaLoader,
+    categoryTagsLoader,
+    checkCategoryById,
+    getAllCategoryList,
+    getTagsByIds,
+    getCategorySchema
 };
