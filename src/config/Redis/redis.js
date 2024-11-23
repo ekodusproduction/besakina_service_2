@@ -52,7 +52,7 @@ const connectRedis = async function () {
         });
         redis.on('ready', async () => {
 
-            console.log('Redis client Redis (Inside mongoose)');
+            console.log('Redis client is Ready ');
             // Call data loading functions once Redis is connected
             console.log(`Redis category loading job executed at ${new Date().toISOString()}`);
             const categoryCount = await categoryListLoader();

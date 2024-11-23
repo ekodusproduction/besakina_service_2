@@ -21,6 +21,7 @@ const asyncDel = async (key) => {
  * Helper to set JSON data in Redis.
  */
 const asyncJsonSet = async (key, path, value) => {
+    console.log("redis print category", redis)
     await redis.json.set(key, path, value);
 };
 
