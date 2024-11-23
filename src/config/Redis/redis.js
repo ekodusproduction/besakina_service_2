@@ -68,7 +68,11 @@ async function connectRedis() {
         }
 
         console.log('Attempting to connect to Redis...');
-        await redis.connect();
+        if (redis.status != 'ready') {
+            await redis.connect();
+            console.log('Redis client is already connected');
+            // No need to connect again
+        }
 
         console.log('Redis client connected successfully. Ping response:', await redis.ping());
 
