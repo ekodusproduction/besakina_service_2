@@ -1,7 +1,16 @@
 import Redis from 'ioredis';
 import dotenv from 'dotenv';
 
+import {
+    categoryListLoader,
+    categorySchemaLoader,
+    categoryTagsLoader
+} from './data/category.seeder.js';
 
+import {
+    advertisementListLoader,
+    advertisementHashLoader
+} from './data/advertisement.seeder.js';
 dotenv.config();
 
 const redisHost = process.env.REDIS_HOST || '127.0.0.1';

@@ -3,16 +3,7 @@ dotenv.config();
 import mongoose from "mongoose";
 import { connectRedis } from './Redis/redis.js'
 
-import {
-    categoryListLoader,
-    categorySchemaLoader,
-    categoryTagsLoader
-} from './Redis/data/category.seeder.js';
 
-import {
-    advertisementListLoader,
-    advertisementHashLoader
-} from './Redis/data/advertisement.seeder.js';
 
 export const mongooseConnection = async function () {
     console.log('MongoDB URI:', process.env.MONGODB_URI);
