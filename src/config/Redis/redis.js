@@ -28,15 +28,15 @@ const redis = new Redis({
 // Function to log connection status
 
 // Call loaders when Redis is connected
-redis.on('connect', async () => {
-    console.log('Redis client connected');
-    
-});
+
 
 redis.on('ready', () => {
     console.log('Redis client ready');
 });
+redis.on('connect', async () => {
+    console.log('Redis client connected');
 
+});
 redis.on('error', (err) => {
     console.error('Redis Client Error:', err);
 });
