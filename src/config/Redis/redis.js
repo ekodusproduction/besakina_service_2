@@ -57,28 +57,37 @@ redis.on('reconnecting', () => {
 // Function to check Redis connection
 async function connectRedis() {
     try {
-        console.log('Connecting to Redis...');
-        await redis.ping(); // Ping Redis to check if it's available
-        console.log('Redis client connected successfully');
+        console.log('Attempting to connect to Redis...');
+
+        // Explicitly call redis.connect()
+        await redis.connect();
+
+        if (!redis.isReady) {
+            console.error('Redis client is not ready after connection attempt!');
+            return;
+        }
+
+        console.log('Redis client connected successfully. Ping response:', await redis.ping());
 
         // Example of loading data using Redis if needed:
         console.log(`Redis category loading job executed at ${new Date().toISOString()}`);
-        const categoryCount = await categoryListLoader()
+        const categoryCount = await categoryListLoader();
         console.log(`Number of categories loaded: ${categoryCount}`);
-        const categorySchemaCount = await categorySchemaLoader()
+        const categorySchemaCount = await categorySchemaLoader();
         console.log(`Number of category schema loaded: ${categorySchemaCount}`);
 
-        const categoryTagsCount = await categoryTagsLoader()
-        console.log(`Number of categorY TAGS loaded: ${categoryTagsCount}`);
+        const categoryTagsCount = await categoryTagsLoader();
+        console.log(`Number of category tags loaded: ${categoryTagsCount}`);
         console.log(`Redis advertisement loading job executed at ${new Date().toISOString()}`);
 
         const advertisementCount = await advertisementListLoader();
         console.log(`Number of advertisements loaded: ${advertisementCount}`);
         const advertisementHashCount = await advertisementHashLoader();
-        console.log(`Number of advertisements loaded: ${advertisementHashCount}`);
+        console.log(`Number of advertisement hashes loaded: ${advertisementHashCount}`);
     } catch (err) {
         console.error('Redis connection error:', err);
     }
 }
+
 
 export { redis, connectRedis };
