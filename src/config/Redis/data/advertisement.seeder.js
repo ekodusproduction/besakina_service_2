@@ -1,3 +1,8 @@
+import { getDB } from "../../mongodb.js";
+import { logger } from "../../../Middlewares/logger.middleware.js";
+import { redis } from "../redis.js";
+import { getCategoryWithTags } from "./fetchTags.js";
+import { ADVERTISEMENT_JSON_KEY, ADVERTISEMENT_LIST_KEY, FEATURED_LIST_KEY } from '../redis.keys.js'
 // Helper method to delete a key if it exists
 const asyncDel = async (key) => {
     if (await redis.exists(key)) {

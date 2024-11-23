@@ -1,4 +1,4 @@
-export const ADVERTISEMENT_HASH_KEY = "advertisements";
+export const ADVERTISEMENT_JSON_KEY = "advertisements";
 export const ADVERTISEMENT_LIST_KEY = "advList";
 export const FEATURED_LIST_KEY = "featuredList";  //for categories :categoryname
 export const CATEGORY_LIST_KEY = "categoriesList";
