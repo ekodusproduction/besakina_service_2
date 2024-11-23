@@ -42,7 +42,7 @@ const categoryListLoader = async function () {
             .project({ name: 1, icon: 1, subcategory: 1, rank: 1 })
             .sort({ rank: 1 })
             .toArray();
-
+        console.log("data category", categoriesList[0])
         await asyncDel(CATEGORY_LIST_KEY); // Clear existing data
         await asyncJsonSet(CATEGORY_LIST_KEY, '$', categoriesList);
 
