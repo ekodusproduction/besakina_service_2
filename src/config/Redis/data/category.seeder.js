@@ -37,7 +37,7 @@ const asyncJsonGet = async (key, path = '$') => {
 const categoryListLoader = async function () {
     try {
         const categoriesList = await getDB()
-            .collection("category")
+            .collection("categories")
             .find({ is_active: true })
             .project({ name: 1, icon: 1, subcategory: 1, rank: 1 })
             .sort({ rank: 1 })
@@ -60,7 +60,7 @@ const categoryListLoader = async function () {
 const categorySchemaLoader = async function () {
     try {
         const categoriesList = await getDB()
-            .collection("category")
+            .collection("categories")
             .find({ is_active: true })
             .project({ subcategory: 1, sellsSchema: 1, marketingSchema: 1, rank: 1 })
             .sort({ rank: 1 })

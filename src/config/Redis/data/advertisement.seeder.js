@@ -17,7 +17,11 @@ const asyncJsonAppend = async (key, path, values) => {
 
 // Fetch all active categories
 const fetchActiveCategories = async () => {
-    return await Category.find({ is_active: true }).sort({ rank: 1 });
+    return await await getDB()
+        .collection("categories")
+        .find({ is_active: true })
+        .project({ _id: 1 }) // Use .project() instead of .select()
+        .toArray();
 };
 
 // Fetch advertisements in batches

@@ -19,7 +19,6 @@ const redisPassword = process.env.REDIS_PASSWORD;
 const redis = new Redis({
     host: redisHost,
     port: redisPort,
-    password: redisPassword,
     reconnectOnError: (err) => {
         console.error('Redis connection error:', err);
         // Reconnect only for certain errors (e.g., ECONNREFUSED)
