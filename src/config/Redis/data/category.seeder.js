@@ -91,8 +91,16 @@ const categoryTagsLoader = async function () {
         await asyncDel(CATEGORY_TAGS_KEY); // Clear existing tags
 
         for (const category of categoriesWithTags) {
-            console.log("categories", category)
-            await asyncJsonSet(CATEGORY_TAGS_KEY, `$.${category._id}`, category.tags);
+            if (!category._id) {
+                logger.warn(`Skipping category with missing _id: ${JSON.stringify(category)}`);
+                continue;
+            }
+
+            const path = `$.${category._id}`;
+            const tags = category.tags || []; // Ensure tags are defined
+            console.log("Loading to Redis:", { path, tags });
+
+            await asyncJsonSet(CATEGORY_TAGS_KEY, path, tags);
         }
 
         logger.info("Category tags loaded into Redis successfully.");
@@ -102,6 +110,7 @@ const categoryTagsLoader = async function () {
         return [];
     }
 };
+
 
 /**
  * Fetch a single category by ID.
