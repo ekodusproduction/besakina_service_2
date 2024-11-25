@@ -20,9 +20,25 @@ const asyncDel = async (key) => {
 /**
  * Helper to set JSON data in Redis.
  */
+/**
+ * Helper to set JSON data in Redis with path validation.
+ */
 const asyncJsonSet = async (key, path, value) => {
-    console.log("redis print category", redis)
-    await redis.json.set(key, path, value);
+    try {
+        const parentPath = path.split(':')[0]; // Extract the root path
+        const exists = await redis.json.get(key, { path: parentPath });
+
+        if (!exists) {
+            // If the parent object doesn't exist, initialize it as an empty object
+            await redis.json.set(key, parentPath, {});
+        }
+
+        // Now, set the value at the desired path
+        await redis.json.set(key, path, value);
+    } catch (err) {
+        console.error("Error in asyncJsonSet:", err);
+        throw err;
+    }
 };
 
 /**
