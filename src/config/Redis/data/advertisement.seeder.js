@@ -12,8 +12,13 @@ const asyncDel = async (key) => {
 
 // Helper method to append JSON data to an array in Redis
 const asyncJsonAppend = async (key, path, values) => {
-    await redis.json.arrappend(key, path, values);
+    const currentArray = await redis.json.get(key, { path });
+    const updatedArray = currentArray ? currentArray.concat(values) : values;
+
+    // Set the updated array back to Redis
+    await redis.json.set(key, path, updatedArray);
 };
+
 
 // Fetch all active categories
 const fetchActiveCategories = async () => {
