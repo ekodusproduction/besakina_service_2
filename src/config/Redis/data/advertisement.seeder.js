@@ -22,7 +22,7 @@ const asyncJsonAppend = async (key, path, values) => {
 
 // Fetch all active categories
 const fetchActiveCategories = async () => {
-    return await await getDB()
+    return await getDB()
         .collection("categories")
         .find({ is_active: true })
         .project({ _id: 1 }) // Use .project() instead of .select()

@@ -23,23 +23,14 @@ const asyncDel = async (key) => {
 /**
  * Helper to set JSON data in Redis with path validation.
  */
-const asyncJsonSet = async (key, path, value) => {
-    try {
-        const parentPath = path.split(':')[0]; // Extract the root path
-        const exists = await redis.json.get(key, { path: parentPath });
+const asyncJsonSet = async (key, path, values) => {
+    const currentArray = await redis.json.get(key, { path });
+    const updatedArray = currentArray ? currentArray.concat(values) : values;
 
-        if (!exists) {
-            // If the parent object doesn't exist, initialize it as an empty object
-            await redis.json.set(key, parentPath, {});
-        }
-
-        // Now, set the value at the desired path
-        await redis.json.set(key, path, value);
-    } catch (err) {
-        console.error("Error in asyncJsonSet:", err);
-        throw err;
-    }
+    // Set the updated array back to Redis
+    await redis.json.set(key, path, updatedArray);
 };
+
 
 /**
  * Helper to get JSON data from Redis.
@@ -102,30 +93,29 @@ const categorySchemaLoader = async function () {
 const categoryTagsLoader = async function () {
     try {
         const categoriesWithTags = await getCategoryWithTags();
-        if (!categoriesWithTags) return [];
+        if (!categoriesWithTags) return 0;
 
         await asyncDel(CATEGORY_TAGS_KEY); // Clear existing tags
 
         for (const category of categoriesWithTags) {
-            if (!category._id) {
-                logger.warn(`Skipping category with missing _id: ${JSON.stringify(category)}`);
-                continue;
-            }
-
+            const key = CATEGORY_TAGS_KEY;
             const path = `$.${category._id}`;
-            const tags = category.tags || []; // Ensure tags are defined
-            console.log("Loading to Redis:", { path, tags });
+            const value = category.tags || []; // Default to an empty array if tags are missing
 
-            await asyncJsonSet(CATEGORY_TAGS_KEY, path, tags);
+            console.log("Loading to Redis:", { path, tags: value });
+
+            // Ensure the path exists and then set the data
+            await asyncJsonSet(key, path, value);
         }
 
         logger.info("Category tags loaded into Redis successfully.");
         return categoriesWithTags.length;
     } catch (err) {
         logger.error("Error loading category tags into Redis:", err);
-        return [];
+        return 0;
     }
 };
+
 
 
 /**
