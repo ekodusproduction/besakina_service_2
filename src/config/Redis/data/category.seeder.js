@@ -2,10 +2,8 @@ import { getDB } from "../../mongodb.js";
 import { logger } from "../../../Middlewares/logger.middleware.js";
 import { redis } from "../redis.js";
 import { getCategoryWithTags } from "./fetchTags.js";
+import { CATEGORY_LIST_KEY, CATEGORY_SCHEMA_KEY, CATEGORY_TAGS_KEY } from "../redis.keys.js";
 
-const CATEGORY_LIST_KEY = "categoriesList";
-const CATEGORY_SCHEMA_KEY = "categoriesSchema";
-const CATEGORY_TAGS_KEY = "categoriesTags";
 
 /**
  * Helper to delete a Redis key if it exists.
@@ -92,7 +90,12 @@ const categorySchemaLoader = async function () {
  */
 const categoryTagsLoader = async function () {
     try {
-        const categoriesWithTags = await getCategoryWithTags();
+        const categoriesWithTags = await getDB()
+            .collection("categories")
+            .find({ is_active: true })
+            .project({ subcategory: 1, tags: 1 })
+            .sort({ rank: 1 })
+            .toArray();
         if (!categoriesWithTags) return 0;
 
         await asyncDel(CATEGORY_TAGS_KEY); // Clear existing tags
