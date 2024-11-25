@@ -31,18 +31,18 @@ const redisConfig = {
     password: redisPassword,
 };
 
-let redisClient;
+let redis;
 
 // Function to log connection status and initialize Redis client
 const connectRedis = async () => {
     try {
-        redisClient = createClient(redisConfig);
+        redis = createClient(redisConfig);
 
-        redisClient.on('connect', () => {
+        redis.on('connect', () => {
             console.log('Redis client connected');
         });
 
-        redisClient.on('ready', async () => {
+        redis.on('ready', async () => {
             console.log('Redis client is ready');
 
             // Custom JSON command can be directly invoked; redis 6.2+ supports JSON.SET
@@ -65,23 +65,23 @@ const connectRedis = async () => {
             console.log(`Number of advertisement hashes loaded: ${advertisementHashCount}`);
         });
 
-        redisClient.on('error', (err) => {
+        redis.on('error', (err) => {
             console.error('Redis Client Error:', err);
         });
 
-        redisClient.on('end', () => {
+        redis.on('end', () => {
             console.log('Redis client disconnected');
         });
 
-        redisClient.on('reconnecting', () => {
+        redis.on('reconnecting', () => {
             console.log('Reconnecting to Redis...');
         });
 
-        await redisClient.connect();
+        await redis.connect();
     } catch (err) {
         console.error('Redis Error:', err);
     }
 };
 
 // Export redis client and connectRedis function
-export { redisClient, connectRedis };
+export { redis, connectRedis };
