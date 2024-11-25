@@ -1,67 +1,51 @@
-import Redis from 'ioredis';
+import { createClient } from 'redis';
 import dotenv from 'dotenv';
 
 import {
     categoryListLoader,
     categorySchemaLoader,
-    categoryTagsLoader
+    categoryTagsLoader,
 } from './data/category.seeder.js';
 
 import {
     advertisementListLoader,
-    advertisementHashLoader
+    advertisementHashLoader,
 } from './data/advertisement.seeder.js';
+
 dotenv.config();
 
 const redisHost = process.env.REDIS_HOST || '127.0.0.1';
 const redisPort = process.env.REDIS_PORT || 6379;
 const redisPassword = process.env.REDIS_PASSWORD;
 
-const config = {
-    host: redisHost,
-    port: redisPort,
-    password: redisPassword,  
-    reconnectOnError: (err) => {
-        console.error('Redis connection error:', err);
-        if (err.message.includes('ECONNREFUSED')) {
-            return true;
-        }
-        return false;
+const redisConfig = {
+    socket: {
+        host: redisHost,
+        port: redisPort,
+        reconnectStrategy: (retries) => {
+            const delay = Math.min(retries * 100, 3000); // Exponential backoff
+            console.log(`Retrying Redis connection: attempt ${retries}, delay ${delay}ms`);
+            return delay;
+        },
     },
-    retryStrategy: (times) => {
-        const delay = Math.min(times * 100, 3000); // Exponential backoff
-        console.log(`Retrying Redis connection: attempt ${times}, delay ${delay}ms`);
-        return delay;
-    },
+    password: redisPassword,
 };
 
-let redis
-// Function to log connection status
-const connectRedis = async function () {
+let redisClient;
+
+// Function to log connection status and initialize Redis client
+const connectRedis = async () => {
     try {
-        redis = new Redis(config);
-        redis.on('connect', async () => {
+        redisClient = createClient(redisConfig);
+
+        redisClient.on('connect', () => {
             console.log('Redis client connected');
-
-        });
-        redis.on('error', (err) => {
-            console.error('Redis Client Error:', err);
         });
 
-        redis.on('close', () => {
-            console.log('Redis client disconnected');
-        });
-        redis.on('ready', async () => {
-            redis.defineCommand('json.set', {
-                numberOfKeys: 1,
-                lua: `
-                  local path = KEYS[1]
-                  local value = ARGV[1]
-                  return redis.call('JSON.SET', path, '.', value)
-                `
-              });
-            console.log('Redis client is Ready ');
-            // Call data loading functions once Redis is connected
+        redisClient.on('ready', async () => {
+            console.log('Redis client is ready');
+
+            // Custom JSON command can be directly invoked; redis 6.2+ supports JSON.SET
             console.log(`Redis category loading job executed at ${new Date().toISOString()}`);
             const categoryCount = await categoryListLoader();
             console.log(`Number of categories loaded: ${categoryCount}`);
@@ -79,21 +63,25 @@ const connectRedis = async function () {
 
             const advertisementHashCount = await advertisementHashLoader();
             console.log(`Number of advertisement hashes loaded: ${advertisementHashCount}`);
+        });
 
-        })
-        redis.on('reconnecting', () => {
+        redisClient.on('error', (err) => {
+            console.error('Redis Client Error:', err);
+        });
+
+        redisClient.on('end', () => {
+            console.log('Redis client disconnected');
+        });
+
+        redisClient.on('reconnecting', () => {
             console.log('Reconnecting to Redis...');
         });
- 
+
+        await redisClient.connect();
     } catch (err) {
         console.error('Redis Error:', err);
     }
-}
-
-  
-// Call loaders when Redis is connected
-
-
+};
 
 // Export redis client and connectRedis function
-export { redis, connectRedis }
+export { redisClient, connectRedis };
