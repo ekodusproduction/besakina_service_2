@@ -68,7 +68,7 @@ const categorySchemaLoader = async function () {
         const categoriesList = await getDB()
             .collection("categories")
             .find({ is_active: true })
-            .project({ subcategory: 1, sellsSchema: 1, marketingSchema: 1, rank: 1 })
+            .project({ sellsSchema: 1, marketingSchema: 1})
             .sort({ rank: 1 })
             .toArray();
 
