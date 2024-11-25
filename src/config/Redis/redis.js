@@ -28,7 +28,7 @@ const redisConfig = {
             return delay;
         },
     },
-    password: redisPassword,
+    // password: redisPassword,
 };
 
 let redis;
