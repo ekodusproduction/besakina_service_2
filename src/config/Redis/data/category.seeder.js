@@ -75,6 +75,7 @@ const categorySchemaLoader = async function () {
         await asyncDel(CATEGORY_SCHEMA_KEY); // Clear existing data
 
         for (const category of categoriesList) {
+            console.log("path", category._id.toString(), category)
             await asyncJsonSet(CATEGORY_SCHEMA_KEY, `$.${category._id.toString()}`, category);
         }
 
@@ -90,12 +91,7 @@ const categorySchemaLoader = async function () {
  */
 const categoryTagsLoader = async function () {
     try {
-        const categoriesWithTags = await getDB()
-            .collection("categories")
-            .find({ is_active: true })
-            .project({ subcategory: 1, tags: 1 })
-            .sort({ rank: 1 })
-            .toArray();
+        const categoriesWithTags = await getCategoryWithTags();
         if (!categoriesWithTags) return 0;
 
         await asyncDel(CATEGORY_TAGS_KEY); // Clear existing tags
@@ -105,7 +101,7 @@ const categoryTagsLoader = async function () {
             const path = `$.${category._id}`;
             const value = category.tags || []; // Default to an empty array if tags are missing
 
-            console.log("Loading to Redis:", { path, tags: value });
+            console.log("Loading to Redis:", { key, path, value });
 
             // Ensure the path exists and then set the data
             await asyncJsonSet(key, path, value);
