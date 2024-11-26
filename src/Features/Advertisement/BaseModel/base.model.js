@@ -59,6 +59,5 @@ baseSchema.pre('save', function (next) {
     }
     next();
 });
-const Base = {...baseSchema} 
-// const Base = mongoose.model('Base', baseSchema);
+const Base = mongoose.model('Base', baseSchema);
 export default Base;
