@@ -16,6 +16,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         requestBody.category = category.name
         if (schema) {
             const mixedSchema = { ...baseSchema, schema }
+            console.log("mixedschema", mixedSchema)
             model = new mongoose.Schema(mixedSchema);
         } else {
             model = Base
