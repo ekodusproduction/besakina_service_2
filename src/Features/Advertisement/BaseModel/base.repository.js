@@ -54,9 +54,9 @@ export const getListAdvertisement = async (categoryId) => {
     try {
         let result;
         if (categoryId) {
-            result = await Base.find({ is_active: true, categoryId: new ObjectId(categoryId) }).sort({ created_at: -1 });
+            result = await getDB().collection('advertisement').find({ is_active: true, categoryId: new ObjectId(categoryId) }).sort({ created_at: -1 }).toArray();
         } else {
-            result = await Base.find({ is_active: true }).sort({ created_at: -1 });
+            result = await getDB().collection('advertisement').find({ is_active: true }).sort({ created_at: -1 }).toArray();
         }
 
         if (result.length === 0) {
