@@ -16,12 +16,12 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
 
         if (schema) {
             console.log('inside if')
-            model = baseSchema.add(schema);
+            baseSchema.add(schema);
         } else {
             console.log('inside else')
-            model = baseSchema
+             
         }
-        const advertisementModel = mongoose.model('advertisement', model);
+        const advertisementModel = mongoose.model('advertisement', baseSchema);
         const result = new advertisementModel(requestBody);
         try {
             await result.validate();
