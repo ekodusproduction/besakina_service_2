@@ -30,9 +30,11 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
             return {
                 error: true,
                 data: {
-                    message: 'Validation failed. Check input fields.',
-                    statusCode: 400,
-                    data: validationError.errors
+                    message: {
+                        message: 'Validation failed. Check input fields.',
+                        statusCode: 400,
+                        data: validationError.errors
+                    }
                 }
             };
         }
