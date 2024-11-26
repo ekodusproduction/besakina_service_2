@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
 const commonOptions = {
-    discriminatorKey: 'advType',
     collection: 'advertisement',
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 };
@@ -62,5 +61,5 @@ baseSchema.pre('save', function (next) {
 });
 
 const Base = mongoose.model('Base', baseSchema);
-
+export { baseSchema }
 export default Base;
