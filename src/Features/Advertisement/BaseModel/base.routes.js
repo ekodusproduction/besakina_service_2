@@ -16,7 +16,7 @@ advRouter.get("/filter", filterAdvertisement)
 advRouter.put("/category/:categoryId", jwtAuth, updateAdvertisement)
 advRouter.put("/activate/advertisement/:advertisementId", jwtAuth, activateAdvertisement)
 advRouter.delete("/deactivate/advertisement/:advertisementId", jwtAuth, deactivateAdvertisement)
-advRouter.get("/category/:categoryId", getAdvertisement)
+advRouter.get("/advertisement/:advertisementId", getAdvertisement)
 //id =>advertisement id
 advRouter.delete("/images/advertisement/:advertisementId", jwtAuth, requestBodyValidator, deleteImage)
 advRouter.post("/images/advertisement/:advertisementId", jwtAuth, fileUpload("doctors"), addImage)
