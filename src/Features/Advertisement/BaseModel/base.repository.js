@@ -3,6 +3,7 @@ import { logger } from "../../../Middlewares/logger.middleware.js";
 import { addUserDetails } from "../../Users/users.repository.js";
 import { getDB } from "../../../config/mongodb.js";
 import Base, { baseSchema } from "./base.model.js";
+import mongoose from 'mongoose';
 
 export const addAdvertisement = async (requestBody, files, category, schema) => {
     try {
