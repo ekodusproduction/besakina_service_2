@@ -60,7 +60,7 @@ export const getListAdvertisement = async (categoryId) => {
         }
 
         if (result.length === 0) {
-            return { error: true, data: { message: `No category to show ${categoryId || ''}.`, statusCode: 404, data: null } };
+            return { error: true, data: { message: `No category to show.`, statusCode: 404, data: null } };
         }
 
         return {
