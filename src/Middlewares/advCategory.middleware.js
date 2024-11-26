@@ -2,6 +2,7 @@
 import { get } from "mongoose";
 import { sendError } from "../Utility/response.js";
 import { getDB } from "../config/mongodb.js";
+const { ObjectId } = require("mongodb");
 export const advCategoryValidationMiddleware = async (req, res, next) => {
     try {
         // Validate the advertisement type ID from the request parameters
