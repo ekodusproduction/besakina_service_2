@@ -20,7 +20,7 @@ export const addAdvertisement = async (req, res, next) => {
 
 export const getAdvertisement = async (req, res, next) => {
     try {
-        const advertisementID = req.params.id;
+        const advertisementID = req.params.advertisementId;
         const result = await repository.getAdvertisement(advertisementID);
         if (result.error) {
             return await sendError(res, result.data.message, result.data.statusCode)
