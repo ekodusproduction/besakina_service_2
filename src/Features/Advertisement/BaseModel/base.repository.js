@@ -8,16 +8,16 @@ import { ObjectId } from "mongodb";
 
 export const addAdvertisement = async (requestBody, files, category, schema) => {
     try {
-        console.log("body", requestBody)
-        console.log("files", files)
-        console.log("category", category)
+
         console.log("schema", schema)
         let model
         requestBody.images = files;
         requestBody.category = category.name
         if (schema) {
+            console.log('inside if')
             model = baseSchema.add(schema);
         } else {
+            console.log('inside else')
             model = baseSchema
         }
         const advertisementModel = mongoose.model('advertisement', model);
