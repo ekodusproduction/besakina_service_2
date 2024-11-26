@@ -50,17 +50,17 @@ export const getAdvertisement = async (advertisementID, Model) => {
     }
 };
 
-export const getListAdvertisement = async (category) => {
+export const getListAdvertisement = async (categoryId) => {
     try {
         let result;
-        if (category) {
-            result = await Base.find({ is_active: true, categoryId: category }).sort({ created_at: -1 });
+        if (categoryId) {
+            result = await Base.find({ is_active: true, categoryId: new ObjectId(categoryId) }).sort({ created_at: -1 });
         } else {
             result = await Base.find({ is_active: true }).sort({ created_at: -1 });
         }
 
         if (result.length === 0) {
-            return { error: true, data: { message: `No ${category} to show.`, statusCode: 404, data: null } };
+            return { error: true, data: { message: `No category to show ${categoryId || ''}.`, statusCode: 404, data: null } };
         }
 
         return {
