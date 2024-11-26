@@ -61,5 +61,4 @@ baseSchema.pre('save', function (next) {
 });
 
 const Base = mongoose.model('Base', baseSchema);
-export { baseSchema }
 export default Base;
