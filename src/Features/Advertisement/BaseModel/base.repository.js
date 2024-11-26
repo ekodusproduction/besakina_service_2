@@ -8,7 +8,6 @@ import { ObjectId } from "mongodb";
 
 export const addAdvertisement = async (requestBody, files, category, schema) => {
     try {
-
         console.log("schema", schema)
         let model
         requestBody.images = files;
@@ -48,15 +47,15 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
     }
 };
 
-export const getAdvertisement = async (advertisementID, Model) => {
+export const getAdvertisement = async (advertisementID) => {
     try {
         const result = await getDB().collection('advertisement').findOne({ _id: new ObjectId(advertisementID) });
 
         if (!result) {
-            return { error: true, data: { message: `No ${Model} to show.`, statusCode: 404, data: null } };
+            return { error: true, data: { message: `No advertisement to show.`, statusCode: 404, data: null } };
         }
 
-        return { error: false, data: { message: `${Model}`, statusCode: 200, data: result } };
+        return { error: false, data: { message: `${advertisementID} data .`, statusCode: 200, data: result } };
     } catch (error) {
         logger.info(error);
         throw new ApplicationError(error, 500);
