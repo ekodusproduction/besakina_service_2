@@ -19,7 +19,7 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
             return sendError(res, 'Invalid or inactive categoryId.', 404);
         }
         console.log("forsale ", req.body.forsale)
-        if (req?.body?.forsale) {
+        if (req?.body?.forsale == 'true') {
             req.schema = category?.sellsSchema;
         } else {
             req.schema = category?.marketingSchema;
