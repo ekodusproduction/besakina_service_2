@@ -59,7 +59,9 @@ export const getListAdvertisement = async (category) => {
             return { error: true, data: { message: `No ${category} to show.`, statusCode: 404, data: null } };
         }
 
-        return { error: false, data: { message: `${category} list.`, statusCode: 200, data: { [category]: result } } };
+        return {
+            error: false, data: { message: `${category} list.`, statusCode: 200, data: result }
+        };
     } catch (error) {
         logger.info(error);
         throw new ApplicationError(error, 500);
