@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const commonOptions = {
-    discriminatorKey: 'categoryId',
+    // discriminatorKey: 'categoryId',
     collection: 'advertisement',
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 };
