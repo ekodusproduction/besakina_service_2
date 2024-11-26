@@ -18,10 +18,8 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         } else {
             model = Base
         }
-
         const document = new model(requestBody);
         const result = await document.save();
-
         if (!result) {
             return { error: true, data: { message: `Error adding advertisement ${category.name}.`, statusCode: 400, data: null } };
         }

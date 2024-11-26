@@ -13,16 +13,16 @@ const advRouter = Router()
 //protected routes id=> advertisement id
 advRouter.post("/category/:categoryId", jwtAuth, advCategoryValidationMiddleware, fileUpload(), addAdvertisement)
 advRouter.get("/filter", filterAdvertisement)
-advRouter.put("/id/:id", jwtAuth, updateAdvertisement)
-advRouter.put("/activate/id/:id", jwtAuth, activateAdvertisement)
-advRouter.delete("/deactivate/id/:id", jwtAuth, deactivateAdvertisement)
-advRouter.get("/id/:id", getAdvertisement)
+advRouter.put("/category/:categoryId", jwtAuth, updateAdvertisement)
+advRouter.put("/activate/advertisement/:advertisementId", jwtAuth, activateAdvertisement)
+advRouter.delete("/deactivate/advertisement/:advertisementId", jwtAuth, deactivateAdvertisement)
+advRouter.get("/category/:categoryId", getAdvertisement)
 //id =>advertisement id
-advRouter.delete("/image/delete/id/:id", jwtAuth, requestBodyValidator, deleteImage)
-advRouter.post("/images/id/:id", jwtAuth, fileUpload("doctors"), addImage)
+advRouter.delete("/images/advertisement/:advertisementId", jwtAuth, requestBodyValidator, deleteImage)
+advRouter.post("/images/advertisement/:advertisementId", jwtAuth, fileUpload("doctors"), addImage)
 //category => doctors, education, hospitals, hospitality, vehicles, properties
-advRouter.get("/list", getListAdvertisement)
-advRouter.delete("/id/:id", jwtAuth, deleteAdvertisement)
+advRouter.get("/category/:categoryId/list", getListAdvertisement)
+advRouter.delete("/advertisement/:advertisementId", jwtAuth, deleteAdvertisement)
 
 // data 
 // advRouter.get("/expertise", listExpertise)
