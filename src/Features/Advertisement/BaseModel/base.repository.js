@@ -15,7 +15,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         requestBody.categoryId = category._id
 
         if (schema) {
-            console.log('inside if')
+            console.log('inside if schema', schema)
             baseSchema.add(schema);
         } else {
             console.log('inside else')
