@@ -22,6 +22,19 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         }
         const advertisementModel = mongoose.model('advertisement', model);
         const result = new advertisementModel(requestBody);
+        try {
+            await result.validate();
+        } catch (validationError) {
+            console.error("Validation Error:", validationError);
+            return {
+                error: true,
+                data: {
+                    message: 'Validation failed. Check input fields.',
+                    statusCode: 400,
+                    data: validationError.errors
+                }
+            };
+        }
         result.save();
         console.log("result", result)
         if (!result) {
