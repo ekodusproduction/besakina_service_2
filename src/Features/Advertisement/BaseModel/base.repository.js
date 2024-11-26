@@ -2,7 +2,7 @@ import { ApplicationError } from "../../../ErrorHandler/applicationError.js";
 import { logger } from "../../../Middlewares/logger.middleware.js";
 import { addUserDetails } from "../../Users/users.repository.js";
 import { getDB } from "../../../config/mongodb.js";
-import Base, { baseSchema } from "./base.model.js";
+import { baseSchema } from "./base.model.js";
 import mongoose from 'mongoose';
 
 export const addAdvertisement = async (requestBody, files, category, schema) => {
@@ -15,11 +15,9 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         requestBody.images = files;
         requestBody.category = category.name
         if (schema) {
-            const mixedSchema = { ...baseSchema, schema }
-            console.log("mixedschema", mixedSchema)
-            model = new mongoose.Schema(mixedSchema);
+            model = baseSchema.add(schema);
         } else {
-            model = Base
+            model = baseSchema
         }
         const document = new model(requestBody);
         const result = await document.save();
