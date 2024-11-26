@@ -4,6 +4,7 @@ import { addUserDetails } from "../../Users/users.repository.js";
 import { getDB } from "../../../config/mongodb.js";
 import { baseSchema } from "./base.model.js";
 import mongoose from 'mongoose';
+import { ObjectId } from "mongodb";
 
 export const addAdvertisement = async (requestBody, files, category, schema) => {
     try {
@@ -19,7 +20,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         } else {
             model = baseSchema
         }
-        const advertisementModel = mongoose.model('advertisement',model);
+        const advertisementModel = mongoose.model('advertisement', model);
         const result = new advertisementModel(requestBody);
         result.save();
         console.log("result", result)
@@ -36,7 +37,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
 
 export const getAdvertisement = async (advertisementID, Model) => {
     try {
-        const result = await Model.findById(advertisementID).populate('user');
+        const result = await getDB().collection('advertisement').findOne({ _id: new ObjectId(advertisementID) });
 
         if (!result) {
             return { error: true, data: { message: `No ${Model} to show.`, statusCode: 404, data: null } };
