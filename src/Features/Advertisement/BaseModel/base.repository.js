@@ -20,7 +20,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
             model = baseSchema
         }
         const advertisementModel = mongoose.model('advertisement', model);
-        const advertisement = new advertisementModel(requestBody);
+        const result = new advertisementModel(requestBody);
         if (!result) {
             return { error: true, data: { message: `Error adding advertisement ${category.name}.`, statusCode: 400, data: null } };
         }
