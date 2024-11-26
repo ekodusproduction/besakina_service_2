@@ -19,7 +19,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         } else {
             model = baseSchema
         }
-        const advertisementModel = mongoose.model(model);
+        const advertisementModel = mongoose.model('advertisement',model);
         const result = new advertisementModel(requestBody);
         console.log("result", result)
         if (!result) {
