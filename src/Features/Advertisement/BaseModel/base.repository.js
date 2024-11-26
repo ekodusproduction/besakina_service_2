@@ -12,6 +12,8 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         let model
         requestBody.images = files;
         requestBody.category = category.name
+        requestBody.categoryId = category._id
+
         if (schema) {
             console.log('inside if')
             model = baseSchema.add(schema);
