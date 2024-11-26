@@ -64,7 +64,7 @@ export const getListAdvertisement = async (categoryId) => {
         }
 
         return {
-            error: false, data: { message: `${category} list.`, statusCode: 200, data: result }
+            error: false, data: { message: `category: ${categoryId} list.`, statusCode: 200, data: result }
         };
     } catch (error) {
         logger.info(error);
