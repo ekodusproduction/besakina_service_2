@@ -1,6 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Collection } from 'mongoose';
 
 const commonOptions = {
+    collection:'advertisement',
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 };
 
@@ -59,5 +60,5 @@ baseSchema.pre('save', function (next) {
     next();
 });
 
-const Base = mongoose.model('Base', baseSchema);
-export default Base;
+// const Base = mongoose.model('Base', baseSchema);
+// export default Base;
