@@ -12,6 +12,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         console.log("schema", schema)
         let model
         requestBody.images = files;
+        requestBody.category = category.name
         if (schema) {
             model = Base.discriminator(category._id, schema);
         } else {
@@ -70,7 +71,7 @@ export const getListAdvertisement = async (category) => {
 const filterAdvertisement = async (query, Model) => {
     const db = getDB();
     try {
-        const filter = { is_active: true, discriminatorKey: `${Model}`, ...query };
+        const filter = { is_active: true, subcategoryId: `${Model}`, ...query };
         const doctors = await db.collection('advertisement').find(filter).sort({ created_at: -1 }).toArray();
         if (doctors.length === 0) {
             return { error: true, data: { message: "No doctors to show.", statusCode: 404, data: null } };

@@ -25,8 +25,9 @@ export const baseSchema = new mongoose.Schema({
     verified: { type: Boolean, default: true },
     is_active: { type: Boolean, default: true },
     tags: [{ type: String, default: null }],
-    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Categories', required: true },
     subcategory: [{ type: String, default: null }],
+    category: { type: String }, // redunduncy
     subcategoryId: [{ type: String, default: null }],
     address: { type: String, required: true },
     city: { type: String, required: true },
@@ -43,10 +44,13 @@ export const baseSchema = new mongoose.Schema({
     reviews: [{ type: String, required: true }],
 }, commonOptions);
 
-baseSchema.index({ "advType": 1 })
+baseSchema.index({ "categoryId": 1 })
 baseSchema.index({ "_id": 1, "user": 1 })
 baseSchema.index({ "is_active": 1, "created_at": -1 });
-baseSchema.index({ "brand": 1, "price": 1 });
+baseSchema.index({
+    name: 'text',
+    tags: 'text',
+});
 
 baseSchema.pre('save', function (next) {
     for (let key in this.toObject()) {
@@ -58,12 +62,5 @@ baseSchema.pre('save', function (next) {
 });
 
 const Base = mongoose.model('Base', baseSchema);
-
-baseSchema.index({
-    name: 'text',
-    tag: 'text',
-    model: 'text',
-    brand:'text',
-});
 
 export default Base;
