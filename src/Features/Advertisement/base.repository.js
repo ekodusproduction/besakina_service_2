@@ -118,7 +118,7 @@ export const getListAdvertisement = async (categoryId) => {
         } else {
             result = await getDB().collection('advertisement').find({ is_active: true }).sort({ created_at: -1 }).toArray();
         }
-
+        console.log("result", result)
         if (result.length === 0) {
             return { error: true, data: { message: `No category to show.`, statusCode: 404, data: null } };
         }
