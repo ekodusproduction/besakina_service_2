@@ -52,15 +52,46 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
     }
 };
 
+
+
 export const getAdvertisement = async (advertisementID) => {
     try {
-        const result = await getDB().collection('advertisement').findOne({ _id: new ObjectId(advertisementID) });
+        const db = getDB();
 
-        if (!result) {
+        const result = await db.collection('advertisement').aggregate([
+            {
+                $match: { _id: new ObjectId(advertisementID) }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$user',
+                    preserveNullAndEmptyArrays: true
+                }
+            }
+        ]).toArray();
+
+        if (result.length === 0) {
             return { error: true, data: { message: `No advertisement to show.`, statusCode: 404, data: null } };
         }
 
-        return { error: false, data: { message: `${advertisementID} data .`, statusCode: 200, data: result } };
+        const advertisement = result[0];
+
+        return {
+            error: false,
+            data: {
+                message: `Fetched advertisement and user data successfully.`,
+                statusCode: 200,
+                data: advertisement
+            }
+        };
     } catch (error) {
         logger.info(error);
         throw new ApplicationError(error, 500);
