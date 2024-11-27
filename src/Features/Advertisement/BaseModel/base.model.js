@@ -60,5 +60,5 @@ baseSchema.pre('save', function (next) {
     next();
 });
 
-// const Base = mongoose.model('Base', baseSchema);
-// export default Base;
+const Base = mongoose.model('Base', baseSchema);
+export default Base;
