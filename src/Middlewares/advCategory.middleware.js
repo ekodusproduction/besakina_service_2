@@ -20,7 +20,7 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
             return sendError(res, 'Invalid or inactive categoryId.', 404);
         }
         console.log("forsale ", req.body.forSale)
-        if (req?.body?.forSale == true ) {
+        if (req?.body?.forSale == 'true' || req?.body?.forSale == true) {
             req.schema = await extractCategorySchema(categoryId);
             console.log("inside if  middleware", req.schema)
         } else {
