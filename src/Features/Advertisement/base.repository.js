@@ -120,11 +120,11 @@ export const getListAdvertisement = async (categoryId) => {
         }
         console.log("result", result)
         if (result.length === 0) {
-            return { error: true, data: { message: `No category to show.`, statusCode: 404, data: null } };
+            return { error: true, message: `No category to show.`, statusCode: 404, data: null };
         }
 
         return {
-            error: false, data: { message: `category: ${categoryId} list.`, statusCode: 200, }, data: result
+            error: false, message: `category: ${categoryId} list.`, data: result, statusCode: 200
         };
     } catch (error) {
         logger.info(error);
