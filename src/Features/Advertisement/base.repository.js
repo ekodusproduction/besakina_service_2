@@ -112,6 +112,7 @@ export const getAdvertisement = async (advertisementID) => {
 export const getListAdvertisement = async (categoryId) => {
     try {
         let result;
+        console.log("category", categoryId)
         if (categoryId) {
             result = await getDB().collection('advertisement').find({ is_active: true, categoryId: new ObjectId(categoryId) }).sort({ created_at: -1 }).toArray();
         } else {
