@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { baseSchema } from "../BaseModel/Base.model.js";
+import { baseSchema } from "../BaseModel/base.model.js";
 
 const featured = new mongoose.Schema({
     featured: { type: Boolean, default: true }
