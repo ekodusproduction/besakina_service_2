@@ -52,13 +52,6 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
     }
 };
 
-
-
-import { ObjectId } from 'mongodb';
-import { getDB } from './db'; // Replace with your actual DB module import
-import { ApplicationError } from './errors'; // Replace with your error handling module
-import logger from './logger'; // Replace with your logger module
-
 export const getAdvertisement = async (advertisementID) => {
     try {
         const db = getDB();
