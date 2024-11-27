@@ -83,7 +83,7 @@ export const getAdvertisement = async (advertisementID) => {
         }
         return {
             error: false,
-            message: `Fetched advertisement and user data successfully.`, data: result, statusCode: 200
+            message: `Fetched advertisement and user data successfully.`, data: result[0], statusCode: 200
         }
 
     } catch (error) {
