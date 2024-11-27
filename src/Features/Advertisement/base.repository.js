@@ -89,7 +89,7 @@ export const getAdvertisement = async (advertisementID) => {
         ]).toArray();
 
         if (result.length === 0) {
-            return { error: true, message: `No category to show.`, statusCode: 404, data: null };;
+            return { error: true, message: `No advertisement to show.`, statusCode: 404, data: null };;
         }
 
         const advertisement = result[0];
