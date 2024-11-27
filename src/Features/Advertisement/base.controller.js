@@ -37,9 +37,9 @@ export const getListAdvertisement = async (req, res, next) => {
         const category = req.query?.categoryId || null
         const result = await repository.getListAdvertisement(category);
         if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
+            return await sendError(res, result.message, result.statusCode)
         }
-        return await sendResponse(res, result.data.message, 200, result.data.data);
+        return await sendResponse(res, result.message, 200, result.data);
     } catch (error) {
         logger.info(error)
         next(error);

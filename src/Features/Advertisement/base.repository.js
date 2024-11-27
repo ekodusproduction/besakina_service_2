@@ -124,7 +124,8 @@ export const getListAdvertisement = async (categoryId) => {
         }
 
         return {
-            error: false, message: `category: ${categoryId} list.`, data: result, statusCode: 200
+            error: false,
+            message: `category: ${categoryId} list.`, data: result, statusCode: 200
         };
     } catch (error) {
         logger.info(error);
