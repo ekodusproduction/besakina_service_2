@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-    deactivateAdvertisement, updateAdvertisement, filterAdvertisement,
+    deactivateAdvertisement, updateAdvertisement, 
     getListAdvertisement, addAdvertisement, addImage, deleteImage, getAdvertisement, activateAdvertisement,
     deleteAdvertisement
 } from "./featured.controller.js"

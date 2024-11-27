@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 
 import {
     categoryListLoader,
-    categorySchemaLoader,
     categoryTagsLoader,
 } from './data/category.seeder.js';
 

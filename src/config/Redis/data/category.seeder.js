@@ -178,7 +178,6 @@ const getCategorySchema = async function (id = null) {
 // Exporting functions
 export {
     categoryListLoader,
-    categorySchemaLoader,
     categoryTagsLoader,
     checkCategoryById,
     getAllCategoryList,

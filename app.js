@@ -17,7 +17,7 @@ import wishlistRoutes from './src/Features/Wishlist/wishlist.routes.js';
 import paymentRouter from './src/Features/Payments/paymentRoutes.js';
 import adminRouter from './src/Features/Admin/routes.js';
 import featuredRouter from './src/Features/Advertisement/FeaturedAds/featured.routes.js';
-import advRouter from './src/Features/Advertisement/BaseModel/base.routes.js';
+import advRouter from './src/Features/Advertisement/base.routes.js';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const app = express()

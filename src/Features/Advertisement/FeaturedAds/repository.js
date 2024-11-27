@@ -1,8 +1,7 @@
 import { getDB } from "../../../config/mongodb.js";
 import { ApplicationError } from "../../../ErrorHandler/applicationError.js";
 import { logger } from "../../../Middlewares/logger.middleware.js";
-import FeaturedFormData from "./Models/FeaturedFormModel.js";
-import Featured from "./Models/FeaturedModel.js";
+import Featured from "./featured.model.js";
 
 export const addAdvertisement = async (requestBody, files) => {
     try {
