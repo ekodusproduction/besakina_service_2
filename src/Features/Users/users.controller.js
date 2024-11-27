@@ -120,24 +120,23 @@ export const addUserDocs = async function (req, res, next) {
     }
 };
 
-// export const getUserAdds = async function (req, res, next) {
-//     const { user } = req;
-//     if (!ObjectId.isValid(user)) {
-//         return sendError(res, "Invalid User id", 400);
-//     }
-//     try {
-//         const ads = await Base.find({ user: user })
-//         const business = await Business.find({ user: user })
-//         const combined = [...business, ...ads];
-//         if (!combined.length) {
-//             return sendResponse(res, "No advertisements or businesses found", 200, []);
-//         }
-//         return sendResponse(res, 'User ads and businesses', 200, combined);
-//     } catch (error) {
-//         console.error("Error fetching user ads and businesses:", error);
-//         next(error);
-//     }
-// };
+export const getUserAdds = async function (req, res, next) {
+    const { user } = req;
+    if (!ObjectId.isValid(user)) {
+        return sendError(res, "Invalid User id", 400);
+    }
+    try {
+      
+        const combined = await getDB().collections('users').find({_id : new ObjectId(user)}).toArray();
+        if (!combined.length) {
+            return sendResponse(res, "No advertisements or businesses found", 200, []);
+        }
+        return sendResponse(res, 'User ads and businesses', 200, combined);
+    } catch (error) {
+        console.error("Error fetching user ads and businesses:", error);
+        next(error);
+    }
+};
 
 export const getUserDetails = async function (req, res, next) {
     const { user } = req;
