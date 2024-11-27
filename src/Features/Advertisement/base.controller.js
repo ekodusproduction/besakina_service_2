@@ -42,7 +42,7 @@ export const getListAdvertisement = async (req, res, next) => {
         if (result.error) {
             return await sendError(res, result.message, result.statusCode)
         }
-        return await sendResponse(res, result.message, 200, result.data);
+        return await sendResponse(res, result.message, result.statusCode, result.data);
     } catch (error) {
         logger.info(error)
         next(error);

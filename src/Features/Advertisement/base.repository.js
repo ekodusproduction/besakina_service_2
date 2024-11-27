@@ -54,7 +54,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
 export const getAdvertisement = async (advertisementID) => {
     try {
         const db = getDB();
-
+        console.log("advertisement", advertisementID)
         // Use aggregation pipeline to increment views and fetch advertisement + user
         const result = await db.collection('advertisement').aggregate([
             {
