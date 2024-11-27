@@ -89,7 +89,7 @@ export const getAdvertisement = async (advertisementID) => {
         ]).toArray();
 
         if (result.length === 0) {
-            return { error: true, message: `No advertisement to show.`, statusCode: 404, data: null };;
+            return { error: true, message: `No advertisement to show.`, statusCode: 404, data: null };
         }
 
         const advertisement = result[0];
@@ -105,14 +105,16 @@ export const getAdvertisement = async (advertisementID) => {
 };
 
 
-export const getListAdvertisement = async (categoryId) => {
+export const getListAdvertisement = async (categoryId, limit, offset) => {
     try {
         let result;
         console.log("category", categoryId)
         if (categoryId) {
-            result = await getDB().collection('advertisement').find({ is_active: true, categoryId: new ObjectId(categoryId) }).sort({ created_at: -1 }).toArray();
+            result = await getDB().collection('advertisement').find({ is_active: true, categoryId: new ObjectId(categoryId) }).sort({ created_at: -1 }).skip(offset)
+                .limit(limit).toArray();
         } else {
-            result = await getDB().collection('advertisement').find({ is_active: true }).sort({ created_at: -1 }).toArray();
+            result = await getDB().collection('advertisement').find({ is_active: true }).sort({ created_at: -1 }).skip(offset)
+                .limit(limit).toArray();
         }
         console.log("result", result)
         if (result.length === 0) {
