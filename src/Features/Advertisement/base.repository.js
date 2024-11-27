@@ -54,26 +54,44 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
 
 
 
+import { ObjectId } from 'mongodb';
+import { getDB } from './db'; // Replace with your actual DB module import
+import { ApplicationError } from './errors'; // Replace with your error handling module
+import logger from './logger'; // Replace with your logger module
+
 export const getAdvertisement = async (advertisementID) => {
     try {
         const db = getDB();
 
+        // Use aggregation pipeline to increment views and fetch advertisement + user
         const result = await db.collection('advertisement').aggregate([
             {
                 $match: { _id: new ObjectId(advertisementID) }
             },
             {
+                $addFields: {
+                    views: { $add: [{ $ifNull: ['$views', 0] }, 1] } // Increment views by 1, defaulting to 0 if not present
+                }
+            },
+            {
                 $lookup: {
                     from: 'users',
-                    localField: 'user',
-                    foreignField: '_id',
+                    localField: 'user', // The field in advertisement referencing the user
+                    foreignField: '_id', // The field in users collection corresponding to the user field
                     as: 'user'
                 }
             },
             {
                 $unwind: {
                     path: '$user',
-                    preserveNullAndEmptyArrays: true
+                    preserveNullAndEmptyArrays: true // Allow advertisements without associated users
+                }
+            },
+            {
+                $merge: {
+                    into: 'advertisement', // Merge the result back into the advertisement collection to update it
+                    whenMatched: 'merge', // Merge the result into the same document
+                    whenNotMatched: 'discard' // Do not insert if no match is found (although we already matched by _id)
                 }
             }
         ]).toArray();
@@ -97,6 +115,7 @@ export const getAdvertisement = async (advertisementID) => {
         throw new ApplicationError(error, 500);
     }
 };
+
 
 export const getListAdvertisement = async (categoryId) => {
     try {
