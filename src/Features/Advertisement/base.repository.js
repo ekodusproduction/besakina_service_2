@@ -54,17 +54,13 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
 export const getAdvertisement = async (advertisementID) => {
     try {
         const db = getDB();
-        console.log("advertisement", advertisementID)
-        // Use aggregation pipeline to increment views and fetch advertisement + user
+        await db.collection('advertisement').updateOne(
+            { _id: new ObjectId(advertisementID) },
+            { $inc: { views: 1 } }
+        );
+        
         const result = await db.collection('advertisement').aggregate([
-            {
-                $match: { _id: new ObjectId(advertisementID) }
-            },
-            {
-                $addFields: {
-                    views: { $add: [{ $ifNull: ['$views', 0] }, 1] }
-                }
-            },
+            { $match: { _id: new ObjectId(advertisementID) } },
             {
                 $lookup: {
                     from: 'users',
@@ -78,26 +74,18 @@ export const getAdvertisement = async (advertisementID) => {
                     path: '$user',
                     preserveNullAndEmptyArrays: true
                 }
-            },
-            {
-                $merge: {
-                    into: 'advertisement',
-                    whenMatched: 'merge',
-                    whenNotMatched: 'discard'
-                }
             }
         ]).toArray();
-
+        
+        console.log("result", result)
         if (result.length === 0) {
             return { error: true, message: `No advertisement to show.`, statusCode: 404, data: null };
         }
-
-        const advertisement = result[0];
-
         return {
             error: false,
-            message: `Fetched advertisement and user data successfully.`, data: advertisement, statusCode: 200
+            message: `Fetched advertisement and user data successfully.`, data: result, statusCode: 200
         }
+
     } catch (error) {
         logger.info(error);
         throw new ApplicationError(error, 500);
