@@ -23,9 +23,9 @@ export const getAdvertisement = async (req, res, next) => {
         const advertisementID = req.params.advertisementId;
         const result = await repository.getAdvertisement(advertisementID);
         if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
+            return await sendError(res, result.message, result.statusCode)
         }
-        return await sendResponse(res, result.data.message, result.data.statusCode, result.data.data);
+        return await sendResponse(res, result.message, result.statusCode, result.data);
     } catch (error) {
         logger.info(error)
         next(error);
