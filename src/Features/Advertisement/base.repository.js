@@ -63,28 +63,28 @@ export const getAdvertisement = async (advertisementID) => {
             },
             {
                 $addFields: {
-                    views: { $add: [{ $ifNull: ['$views', 0] }, 1] } // Increment views by 1, defaulting to 0 if not present
+                    views: { $add: [{ $ifNull: ['$views', 0] }, 1] } 
                 }
             },
             {
                 $lookup: {
                     from: 'users',
-                    localField: 'user', // The field in advertisement referencing the user
-                    foreignField: '_id', // The field in users collection corresponding to the user field
+                    localField: 'user', 
+                    foreignField: '_id', 
                     as: 'user'
                 }
             },
             {
                 $unwind: {
                     path: '$user',
-                    preserveNullAndEmptyArrays: true // Allow advertisements without associated users
+                    preserveNullAndEmptyArrays: true 
                 }
             },
             {
                 $merge: {
-                    into: 'advertisement', // Merge the result back into the advertisement collection to update it
-                    whenMatched: 'merge', // Merge the result into the same document
-                    whenNotMatched: 'discard' // Do not insert if no match is found (although we already matched by _id)
+                    into: 'advertisement', 
+                    whenMatched: 'merge', 
+                    whenNotMatched: 'discard' 
                 }
             }
         ]).toArray();
