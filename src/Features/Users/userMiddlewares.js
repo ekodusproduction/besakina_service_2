@@ -3,21 +3,17 @@ import User from "./Models/UserModel.js"
 import Plan from "../Plans/Models/PlanModel.js"
 
 export const checkUserProfileCompletion = async (req, res, next) => {
-    console.log("checking user profile");
     try {
         const userProfile = await User.findById(req.user, 'fullname profile_pic mobile city state').exec();
 
         if (!userProfile) {
             return sendError(res, "Mobile number not registered. Please login.", 400);
         }
-        console.log("user profile >>>>", userProfile)
         if (!userProfile.fullname || !userProfile.mobile) {
             return sendError(res, "User Profile Incomplete", 400);
         }
-        console.log("calling next")
         next();
     } catch (error) {
-        console.error("Checking user profile error", error);
         return sendError(res, "Internal Server Error", 500);
     }
 };
@@ -38,7 +34,6 @@ export const checkUserPlanQuotaPermissions = async (req, res, next) => {
 
         next();
     } catch (error) {
-        console.error("Error checking user plan quota permissions:", error);
         return sendError(res, "Internal Server Error", 500);
     }
 };

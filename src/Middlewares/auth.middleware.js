@@ -5,7 +5,6 @@ import { sendError } from "../Utility/response.js";
 
 export const verifyToken = (token) => {
     try {
-        console.log("token in verification", token)
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         return {
             isValid: true,
@@ -30,7 +29,6 @@ export const jwtAuth = async (req, res, next) => {
     if (isValid) {
         // If token is valid, attach user information to the request object
         req.user = decoded.user;
-        console.log(req.user)
         req.plan_id = decoded.plan_id;
         next();
     } else {

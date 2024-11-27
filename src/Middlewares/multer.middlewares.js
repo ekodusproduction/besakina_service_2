@@ -22,7 +22,6 @@ export const fileUpload = () => {
     return async (req, res, next) => {
         multerUpload.any()(req, res, async (err) => {
             if (!req.files || req.files.length === 0) {
-                console.log("file upload skipped")
                 next()
              }
             if (err) {
@@ -31,9 +30,7 @@ export const fileUpload = () => {
             try {
                 const uploadedFileUrls = [];
                 for (const file of req.files) {
-                    console.log("files  -->", file)
                     const fileUrl = await uploadToSpaces(file);
-                    console.log("file url in middleware", fileUrl)
                     uploadedFileUrls.push(fileUrl);
                 }
                 const filePaths = uploadedFileUrls.map(file => file.path);

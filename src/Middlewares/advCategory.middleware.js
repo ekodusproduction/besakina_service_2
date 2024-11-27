@@ -15,14 +15,11 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
         // const category = await checkCategoryById(req.body.categoryId)
 
         const category = await getDB().collection("categories").findOne({ _id: new ObjectId(categoryId) });
-        console.log("category", category)
         if (!category) {
             return sendError(res, 'Invalid or inactive categoryId.', 404);
         }
-        console.log("forsale ", req.body.forsale)
         if (req?.body?.forsale == 'true') {
             req.schema = await extractCategorySchema(categoryId);
-            ;
         } else {
             req.schema = category?.marketingSchema;
         }
@@ -33,7 +30,6 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
         req.body.tags = await getTagsByIds(category, req.body.subcategoryId);;
         next();
     } catch (error) {
-        console.error('Error in categoryId:', error);
         return sendError(res, 'An error occurred while validating the category Id.', 500);
     }
 };

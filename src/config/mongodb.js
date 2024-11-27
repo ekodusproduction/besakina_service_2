@@ -6,12 +6,9 @@ const url = process.env.MONGODB_URI;
 let client;
 export const connectToMongoDB = async () => {
     try {
-        console.log('MongoDB URI:', process.env.MONGODB_URI);
         client = await MongoClient.connect(url);
         const db = client.db();
-        console.log("Connected to MongoDB using native driver!");
     } catch (err) {
-        console.error("Failed to connect to MongoDB", err);
         throw err;
     }
 };

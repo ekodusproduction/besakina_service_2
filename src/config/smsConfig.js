@@ -21,10 +21,8 @@ export const sendSms = async function (messageId, variables, numbers) {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         });
-        console.log(response.data);
         return true;
     } catch (error) {
-        console.error('Error fastsms:', error);
         return false; 
     }
 };

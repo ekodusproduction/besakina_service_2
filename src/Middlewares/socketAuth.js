@@ -3,8 +3,6 @@ import { verifyToken } from "./auth.middleware.js";
 export const socketAuth = async function (socket, next) {
     try {
         const token = socket.handshake.headers.token || socket.handshake.headers.authorization;
-        console.log("token", token)
-
         if (!token) {
             throw new Error("No token provided. Please provide a valid token.");
         }

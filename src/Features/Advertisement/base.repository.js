@@ -15,18 +15,13 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         requestBody.categoryId = category._id
 
         if (schema) {
-            console.log('inside if schema', schema)
             baseSchema.add(schema);
-        } else {
-            console.log('inside else')
-
         }
         const advertisementModel = mongoose.model('advertisement', baseSchema);
         const result = new advertisementModel(requestBody);
         try {
             await result.validate();
         } catch (validationError) {
-            console.error("Validation Error:", validationError);
             return {
                 error: true,
                 data: {
@@ -40,13 +35,11 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
             };
         }
         result.save();
-        console.log("result", result)
         if (!result) {
             return { error: true, data: { message: `Error adding advertisement ${category.name}.`, statusCode: 400, data: null } };
         }
         return { error: false, data: { message: `${category.name} added successfully`, statusCode: 200, data: { id: result._id } } };
     } catch (error) {
-        console.error(error);
         logger.info(error);
         throw new ApplicationError(error, 500);
     }
@@ -63,28 +56,28 @@ export const getAdvertisement = async (advertisementID) => {
             },
             {
                 $addFields: {
-                    views: { $add: [{ $ifNull: ['$views', 0] }, 1] } 
+                    views: { $add: [{ $ifNull: ['$views', 0] }, 1] }
                 }
             },
             {
                 $lookup: {
                     from: 'users',
-                    localField: 'user', 
-                    foreignField: '_id', 
+                    localField: 'user',
+                    foreignField: '_id',
                     as: 'user'
                 }
             },
             {
                 $unwind: {
                     path: '$user',
-                    preserveNullAndEmptyArrays: true 
+                    preserveNullAndEmptyArrays: true
                 }
             },
             {
                 $merge: {
-                    into: 'advertisement', 
-                    whenMatched: 'merge', 
-                    whenNotMatched: 'discard' 
+                    into: 'advertisement',
+                    whenMatched: 'merge',
+                    whenNotMatched: 'discard'
                 }
             }
         ]).toArray();

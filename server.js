@@ -28,7 +28,6 @@ const io = new Server(httpServer, {
 io.use(socketAuth)
 
 io.on('connection', async (socket) => {
-    console.log('New client connected');
     const user = socket.user;
     // await addUserToOnline(user)
     chatSocket(socket);

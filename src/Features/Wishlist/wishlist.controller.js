@@ -21,7 +21,6 @@ export const addWishListItem = async function (req, res, next) {
 
         const uniqueUser = await ensureUniqueArray(updatedUser._id, User, "wishlist");
 
-        console.log("wishlist ", uniqueUser.wishlist);
 
         return await sendResponse(res, 'Advertisement added to wishlist successfully', 201, uniqueUser._id);
     } catch (error) {

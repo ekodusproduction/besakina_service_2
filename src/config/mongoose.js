@@ -2,11 +2,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 import mongoose from "mongoose";
 import { connectRedis } from './Redis/redis.js'
+import { logger } from '../Middlewares/logger.middleware.js';
 
 
 
 export const mongooseConnection = async function () {
-    console.log('MongoDB URI:', process.env.MONGODB_URI);
 
     const uri = process.env.MONGODB_URI;
     try {
@@ -18,7 +18,7 @@ export const mongooseConnection = async function () {
         await connectRedis()
 
     } catch (err) {
-        console.error('Failed to connect to MongoDB using Mongoose', err);
+        logger.log(err)
         throw err;
     }
 }

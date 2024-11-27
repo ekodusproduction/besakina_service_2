@@ -1,15 +1,13 @@
-import mongoose from 'mongoose';
-import User from './Models/UserModel.js'; // Import the User model
-import Plan from '../Plans/Models/PlanModel.js'; // Import the Plan model
+import User from './Models/UserModel.js'; 
+import Plan from '../Plans/Models/PlanModel.js'; 
 import { sendError, sendResponse } from '../../Utility/response.js';
 import { ApplicationError } from '../../ErrorHandler/applicationError.js';
 import jwt from 'jsonwebtoken';
-import { MongoClient, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { getDB } from '../../config/mongodb.js';
 import Business from '../BusinessListing/Model/BusinessModel.js';
 import { sendSms } from '../../config/smsConfig.js';
 import userRepo from "./users.repository.js"
-// import Base from '../Advertisement/BaseModel/base.model.js';
 
 export const sendOtp = async (req, res, next) => {
     const mobile = parseInt(req.body.mobile, 10);

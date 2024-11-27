@@ -13,7 +13,6 @@ export const addAdvertisement = async (requestBody, files) => {
         }
         return { error: false, data: { message: "Feature added successfully", statusCode: 200, data: { id: savedDoctor._id } } };
     } catch (error) {
-        console.error(error);
         logger.info(error);
         throw new ApplicationError(error, 500);
     }

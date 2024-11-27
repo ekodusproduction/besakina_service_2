@@ -6,7 +6,6 @@ export const addPlan = async function (req, res, next) {
     try {
         const requestBody = req.body;
         const membership_badge = req.fileUrls[0].path;
-        console.log("mem", { ...requestBody, membership_badge })
         const plan = new Plan({ ...requestBody, membership_badge });
         const savedPlan = await plan.save();
 

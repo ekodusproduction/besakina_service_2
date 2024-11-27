@@ -26,9 +26,7 @@ const uploadToSpaces = async (file) => {
 
     try {
         const command = new PutObjectCommand(params);
-        console.log("command", command)
         const data = await s3Client.send(command);
-        console.log("file data", data)
         //endpoint/object/public/besakina/2a43b29a-67ab-4e54-9952-b94ce15a4ca3
         const fileUrl = `https://baymzlfblrjzezsxitxq.supabase.co/storage/v1/object/public/besakina/${params.Key}`;
         return { fieldname: file.fieldname, path: fileUrl };
