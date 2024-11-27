@@ -89,19 +89,15 @@ export const getAdvertisement = async (advertisementID) => {
         ]).toArray();
 
         if (result.length === 0) {
-            return { error: true, data: { message: `No advertisement to show.`, statusCode: 404, data: null } };
+            return { error: true, message: `No category to show.`, statusCode: 404, data: null };;
         }
 
         const advertisement = result[0];
 
         return {
             error: false,
-            data: {
-                message: `Fetched advertisement and user data successfully.`,
-                statusCode: 200,
-                data: advertisement
-            }
-        };
+            message: `Fetched advertisement and user data successfully.`, data: advertisement, statusCode: 200
+        }
     } catch (error) {
         logger.info(error);
         throw new ApplicationError(error, 500);
