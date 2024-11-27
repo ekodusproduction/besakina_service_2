@@ -9,7 +9,6 @@ import { ObjectId } from "mongodb";
 export const addAdvertisement = async (requestBody, files, category, schema) => {
     try {
         console.log("schema", schema)
-        let model
         requestBody.images = files;
         requestBody.category = category.name
         requestBody.categoryId = category._id
@@ -63,28 +62,28 @@ export const getAdvertisement = async (advertisementID) => {
             },
             {
                 $addFields: {
-                    views: { $add: [{ $ifNull: ['$views', 0] }, 1] } 
+                    views: { $add: [{ $ifNull: ['$views', 0] }, 1] }
                 }
             },
             {
                 $lookup: {
                     from: 'users',
-                    localField: 'user', 
-                    foreignField: '_id', 
+                    localField: 'user',
+                    foreignField: '_id',
                     as: 'user'
                 }
             },
             {
                 $unwind: {
                     path: '$user',
-                    preserveNullAndEmptyArrays: true 
+                    preserveNullAndEmptyArrays: true
                 }
             },
             {
                 $merge: {
-                    into: 'advertisement', 
-                    whenMatched: 'merge', 
-                    whenNotMatched: 'discard' 
+                    into: 'advertisement',
+                    whenMatched: 'merge',
+                    whenNotMatched: 'discard'
                 }
             }
         ]).toArray();

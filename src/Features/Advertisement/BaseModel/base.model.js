@@ -34,7 +34,6 @@ export const baseSchema = new mongoose.Schema({
     pincode: { type: Number, required: true },
     name: { type: String, required: false, default: null },
     description: { type: String, required: true },
-    // price: { type: Number, default: null, validate: priceValidator },
     views: { type: Number, default: 0 },
     featured: { type: Boolean, default: false },
     forSale: { type: Boolean, default: true },

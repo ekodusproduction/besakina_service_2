@@ -22,7 +22,7 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
         console.log("forsale ", req.body.forsale)
         if (req?.body?.forsale == 'true') {
             req.schema = await extractCategorySchema(categoryId);
-            ;
+            console.log("inside if")
         } else {
             req.schema = category?.marketingSchema;
         }
