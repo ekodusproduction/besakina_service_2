@@ -126,8 +126,8 @@ export const getUserAdds = async function (req, res, next) {
         return sendError(res, "Invalid User id", 400);
     }
     try {
-      
-        const combined = await getDB().collections('users').find({_id : new ObjectId(user)}).toArray();
+
+        const combined = await getDB().collections('users').find({ _id: new ObjectId(user) }).toArray();
         if (!combined.length) {
             return sendResponse(res, "No advertisements or businesses found", 200, []);
         }
@@ -143,7 +143,7 @@ export const getUserDetails = async function (req, res, next) {
     try {
         const userDetails = await User.findById(user).populate('plan');
         if (!userDetails) {
-            return await sendResponse(res, "User details fetched successfully", 200, { advertisement: [] });
+            return await sendResponse(res, "User details fetched successfully", 200, { "user": {} });
         }
         return await sendResponse(res, 'User details', 201, userDetails, null);
     } catch (error) {
