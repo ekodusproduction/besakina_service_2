@@ -12,7 +12,7 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
             return sendError(res, 'categoryId is missing. Please provide a valid category ID.', 400);
         }
         // Check if the category exists and is active
-                // const category = await checkCategoryById(req.body.categoryId)
+        // const category = await checkCategoryById(req.body.categoryId)
 
         const category = await getDB().collection("categories").findOne({ _id: new ObjectId(categoryId) });
         console.log("category", category)
