@@ -12,7 +12,9 @@ import { advCategoryValidationMiddleware } from "../../Middlewares/advCategory.m
 import { checkUserProfileCompletion } from "../Users/userMiddlewares.js";
 const advRouter = Router()
 
-advRouter.get("/category/:categoryId/list", getListAdvertisement)
+// id ?categoryId=
+advRouter.get("/category/list", getListAdvertisement)
+
 advRouter.get("/advertisement/:advertisementId", getAdvertisement)
 advRouter.get("/filter", filterAdvertisement)
 

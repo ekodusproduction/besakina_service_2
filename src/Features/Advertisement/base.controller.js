@@ -34,7 +34,7 @@ export const getAdvertisement = async (req, res, next) => {
 
 export const getListAdvertisement = async (req, res, next) => {
     try {
-        const category = req.params?.categoryId
+        const category = req.query?.categoryId || null
         const result = await repository.getListAdvertisement(category);
         if (result.error) {
             return await sendError(res, result.data.message, result.data.statusCode)
