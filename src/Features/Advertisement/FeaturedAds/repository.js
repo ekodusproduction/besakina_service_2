@@ -55,36 +55,7 @@ export const getListAdvertisement = async (limit, offset) => {
     }
 };
 
-const filterAdvertisement = async (query) => {
-    try {
-        // Build the filter object
-        const filter = { is_active: true };
 
-        // Add dynamic filters based on the query parameters
-        for (const key in query) {
-            if (query.hasOwnProperty(key)) {
-                if (key === 'minPrice' && query[key] !== undefined) {
-                    if (!filter.price) filter.price = {};
-                    filter.price.$gte = parseFloat(query[key]);
-                } else if (key === 'maxPrice' && query[key] !== undefined) {
-                    if (!filter.price) filter.price = {};
-                    filter.price.$lte = parseFloat(query[key]);
-                } else {
-                    filter[key] = query[key];
-                }
-            }
-        }
-
-        const result = await Featured.find(filter).sort({ created_at: -1 });
-        if (result.length === 0) {
-            return { error: true, data: { message: "No Feature to show.", statusCode: 404, data: null } };
-        }
-        return { error: false, data: { message: "Feature filter list", statusCode: 200, data: { Featured: result } } };
-    } catch (error) {
-        logger.info(error);
-        throw new ApplicationError(error, 500);
-    }
-};
 
 export const updateAdvertisement = async (advertisementID, updateBody, userId) => {
     try {
@@ -92,7 +63,7 @@ export const updateAdvertisement = async (advertisementID, updateBody, userId) =
             return { error: true, data: { message: "Invalid request body", statusCode: 400, data: null } };
         }
         const result = await Featured.findOneAndUpdate(
-            { _id: advertisementID, user: userId },
+            { _id: advertisementID, user: userId, featured: true },
             updateBody,
             { new: true }
         );
@@ -109,7 +80,7 @@ export const updateAdvertisement = async (advertisementID, updateBody, userId) =
 export const deactivateAdvertisement = async (advertisementID, userId) => {
     try {
         const result = await Featured.findOneAndUpdate(
-            { _id: advertisementID, user: userId, is_active: true },
+            { _id: advertisementID, user: userId, is_active: true, featured: true },
             { is_active: false },
             { new: true }
         );
@@ -125,7 +96,7 @@ export const deactivateAdvertisement = async (advertisementID, userId) => {
 
 export const addImage = async (advertisementID, files, userId) => {
     try {
-        const result = await Featured.findOne({ _id: advertisementID, user: userId });
+        const result = await Featured.findOne({ _id: advertisementID, user: userId, featured: true });
         if (!result) {
             return { error: true, data: { message: "Feature not found.", statusCode: 404, data: null } };
         }
@@ -190,75 +161,16 @@ export const deleteAdvertisement = async (advertisementID, userId) => {
     }
 };
 
-export const listFormData = async (fieldname) => {
-    try {
-        const result = await FeaturedFormData.find({ fieldname: fieldname });
-        if (result.deletedCount === 0) {
-            return { error: true, data: { message: `${fieldname} not found.`, statusCode: 404, data: null } };
-        }
-        return { error: false, data: { message: `${fieldname} List.`, statusCode: 200, data: { [fieldname]: result } } };
-    } catch (error) {
-        logger.info(error);
-        throw new ApplicationError(error, 500);
-    }
-};
 
-export const addFormData = async (data, fieldname) => {
-    try {
-        const result = await FeaturedFormData.create(data);
-        if (!result) {
-            return { error: true, data: { message: `${fieldname} not found.`, statusCode: 404, data: null } };
-        }
-        return { error: false, data: { message: `New ${fieldname} added.`, statusCode: 200, data: { _id: result._id } } };
-    } catch (error) {
-        logger.info(error);
-        throw new ApplicationError(error, 500);
-    }
-};
-
-export const editFormData = async (expertiseId, data, fieldname) => {
-    try {
-        const result = await FeaturedFormData.updateOne({ _id: expertiseId }, data);
-
-        if (result.nModified === 0) {
-            return { error: true, data: { message: `${fieldname} not found.`, statusCode: 404, data: null } };
-        }
-
-        return { error: false, data: { message: `${fieldname} updated.`, statusCode: 200, data: result } };
-    } catch (error) {
-        logger.info(error);
-        throw new ApplicationError(error.message, 500);
-    }
-};
-
-export const deleteFormData = async (id, fieldname) => {
-    try {
-        const result = await FeaturedFormData.deleteOne({ _id: id });
-
-        if (result.deletedCount === 0) {
-            return { error: true, data: { message: `${fieldname} not found.`, statusCode: 404, data: null } };
-        }
-
-        return { error: false, data: { message: `${fieldname} deleted.`, statusCode: 200 } };
-    } catch (error) {
-        logger.info(error);
-        throw new ApplicationError(error, 500);
-    }
-};
 
 export default {
     addAdvertisement,
     getAdvertisement,
     getListAdvertisement,
-    filterAdvertisement,
     deactivateAdvertisement,
     updateAdvertisement,
     addImage,
     activateAdvertisement,
     deleteImage,
-    deleteAdvertisement,
-    deleteFormData,
-    addFormData,
-    editFormData,
-    listFormData,
+    deleteAdvertisement
 };

@@ -50,8 +50,8 @@ const connectRedis = async () => {
             const categoryCount = await categoryListLoader();
             console.log(`Number of categories loaded: ${categoryCount}`);
 
-            const categorySchemaCount = await categorySchemaLoader();
-            console.log(`Number of category schema loaded: ${categorySchemaCount}`);
+            // const categorySchemaCount = await categorySchemaLoader();
+            // console.log(`Number of category schema loaded: ${categorySchemaCount}`);
 
             const categoryTagsCount = await categoryTagsLoader();
             console.log(`Number of category tags loaded: ${categoryTagsCount}`);

@@ -48,21 +48,6 @@ export const getListAdvertisement = async (req, res, next) => {
 };
 
 
-export const filterAdvertisement = async (req, res, next) => {
-    try {
-        const query = req.query;
-        const result = await repository.filterAdvertisement(query);
-        if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
-        }
-        return await sendResponse(res, result.data.message, 200, result.data.data);
-    } catch (error) {
-        logger.info(error)
-        next(error);
-    }
-};
-
-
 export const updateAdvertisement = async (req, res, next) => {
     try {
         const advertisementID = req.params.id;
@@ -138,62 +123,6 @@ export const deleteAdvertisement = async (req, res, next) => {
     try {
         const advertisementID = req.params.id;
         const result = await repository.deleteAdvertisement(advertisementID, req.user);
-        if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
-        }
-        return await sendResponse(res, result.data.message, 200);
-    } catch (error) {
-        logger.info(error)
-        next(error);
-    }
-};
-
-export const listFormData = async (req, res, next) => {
-    try {
-        const fieldname = req.params.fieldname;
-
-        const result = await repository.listFormData(fieldname);
-        if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
-        }
-        return await sendResponse(res, result.data.message, 200, result.data.data);
-    } catch (error) {
-        logger.info(error)
-        next(error);
-    }
-};
-
-export const addFormData = async (req, res, next) => {
-    try {
-        const result = await repository.addFormData(req.body, req.body.fieldname);
-        if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
-        }
-        return await sendResponse(res, result.data.message, 200, result.data.data);
-    } catch (error) {
-        logger.info(error)
-        next(error);
-    }
-};
-
-export const editFormData = async (req, res, next) => {
-    try {
-        const id = req.params.id
-        const data = req.body
-        const result = await repository.editFormData(id, data, req.body.fieldname);
-        if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
-        }
-        return await sendResponse(res, result.data.message, 200);
-    } catch (error) {
-        logger.info(error)
-        next(error);
-    }
-};
-
-export const deleteFormData = async (req, res, next) => {
-    try {
-        const result = await repository.deleteFormData(req.params.id, req.params.fieldname);
         if (result.error) {
             return await sendError(res, result.data.message, result.data.statusCode)
         }

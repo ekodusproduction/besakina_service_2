@@ -63,28 +63,28 @@ const categoryListLoader = async function () {
 /**
  * Load schemas for all categories into Redis as JSON objects.
  */
-const categorySchemaLoader = async function () {
-    try {
-        const categoriesList = await getDB()
-            .collection("categories")
-            .find({ is_active: true })
-            .project({ sellsSchema: 1, marketingSchema: 1})
-            .sort({ rank: 1 })
-            .toArray();
+// const categorySchemaLoader = async function () {
+//     try {
+//         const categoriesList = await getDB()
+//             .collection("categories")
+//             .find({ is_active: true })
+//             .project({ sellsSchema: 1, marketingSchema: 1})
+//             .sort({ rank: 1 })
+//             .toArray();
 
-        await asyncDel(CATEGORY_SCHEMA_KEY); // Clear existing data
+//         await asyncDel(CATEGORY_SCHEMA_KEY); // Clear existing data
 
-        for (const category of categoriesList) {
-            console.log("path", category._id.toString(), category)
-            await asyncJsonSet(CATEGORY_SCHEMA_KEY, `$.${category._id.toString()}`, category);
-        }
+//         for (const category of categoriesList) {
+//             console.log("path", category._id.toString(), category)
+//             await asyncJsonSet(CATEGORY_SCHEMA_KEY, `$.${category._id.toString()}`, category);
+//         }
 
-        logger.info("Category schemas loaded into Redis successfully.");
-    } catch (err) {
-        logger.error("Error loading category schemas into Redis:", err);
-        return false;
-    }
-};
+//         logger.info("Category schemas loaded into Redis successfully.");
+//     } catch (err) {
+//         logger.error("Error loading category schemas into Redis:", err);
+//         return false;
+//     }
+// };
 
 /**
  * Load category tags into Redis as JSON objects.

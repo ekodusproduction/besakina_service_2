@@ -1,8 +1,9 @@
-// import { checkCategoryById, getTagsByIds } from "../config/Redis/data/category.seeder.js";
+import { checkCategoryById, getTagsByIds } from "../config/Redis/data/category.seeder.js";
 import { get } from "mongoose";
 import { sendError } from "../Utility/response.js";
 import { getDB } from "../config/mongodb.js";
 import { ObjectId } from "mongodb";
+import { extractCategorySchema } from "../Features/Advertisement/advertisement.submodels.js";
 export const advCategoryValidationMiddleware = async (req, res, next) => {
     try {
         // Validate the advertisement type ID from the request parameters
@@ -10,9 +11,9 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
         if (!categoryId) {
             return sendError(res, 'categoryId is missing. Please provide a valid category ID.', 400);
         }
-
         // Check if the category exists and is active
-        // const category = await checkCategoryById(req.body.categoryId)
+                // const category = await checkCategoryById(req.body.categoryId)
+
         const category = await getDB().collection("categories").findOne({ _id: new ObjectId(categoryId) });
         console.log("category", category)
         if (!category) {
@@ -20,7 +21,8 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
         }
         console.log("forsale ", req.body.forsale)
         if (req?.body?.forsale == 'true') {
-            req.schema = category?.sellsSchema;
+            req.schema = await extractCategorySchema(categoryId);
+            ;
         } else {
             req.schema = category?.marketingSchema;
         }
@@ -28,7 +30,7 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
         req.category = category;
 
         // Attach search tags to the request object for further use
-        // req.body.tags = await getTagsByIds(category, req.body.subcategoryId);;
+        req.body.tags = await getTagsByIds(category, req.body.subcategoryId);;
         next();
     } catch (error) {
         console.error('Error in categoryId:', error);
