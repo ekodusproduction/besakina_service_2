@@ -28,26 +28,22 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
             console.error("Validation Error:", validationError);
             return {
                 error: true,
-                data: {
-                    message: {
-                        message: 'Validation failed. Check input fields.',
-                        data: validationError.errors
-                    },
-                    statusCode: 400,
-                    data: validationError.errors
-                }
-            };
-        }
-        result.save();
-        if (!result) {
-            return { error: true, data: { message: `Error adding advertisement ${category.name}.`, statusCode: 400, data: null } };
-        }
-        return { error: false, data: { message: `${category.name} added successfully`, statusCode: 200, data: { id: result._id } } };
-    } catch (error) {
-        console.error(error);
-        logger.info(error);
-        throw new ApplicationError(error, 500);
+                message: 'Validation failed. Check input fields.',
+                statusCode: 400,
+                data: validationError.errors
+            }
+        };
     }
+        result.save();
+    if (!result) {
+        return { error: true, data: { message: `Error adding advertisement ${category.name}.`, statusCode: 400, data: null } };
+    }
+    return { error: false, data: { message: `${category.name} added successfully`, statusCode: 200, data: { id: result._id } } };
+} catch (error) {
+    console.error(error);
+    logger.info(error);
+    throw new ApplicationError(error, 500);
+}
 };
 
 export const getAdvertisement = async (advertisementID) => {
