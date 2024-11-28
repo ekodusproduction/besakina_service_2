@@ -49,7 +49,8 @@ export const getListAdvertisement = async (req, res, next) => {
 
 export const filterAdvertisement = async (req, res, next, Model) => {
     try {
-        const {categoryId, search} = req.query;
+        const { categoryId } = req.params;
+        const { search } = req.query;
         const result = await repository.filterAdvertisement(categoryId, JSON.parse(search));
         if (result.error) {
             return await sendError(res, result.message, result.statusCode, result.data)
