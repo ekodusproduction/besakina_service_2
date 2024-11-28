@@ -20,7 +20,7 @@ advRouter.get("/filter", filterAdvertisement)
 
 // jwt
 advRouter.post("/category/:categoryId", jwtAuth, checkUserProfileCompletion, fileUpload(), advCategoryValidationMiddleware, addAdvertisement)
-advRouter.put("/category/:categoryId", jwtAuth, updateAdvertisement)
+advRouter.put("/advertisement/:advertisementId", jwtAuth, updateAdvertisement)
 advRouter.put("/activate/advertisement/:advertisementId", jwtAuth, activateAdvertisement)
 advRouter.delete("/deactivate/advertisement/:advertisementId", jwtAuth, deactivateAdvertisement)
 

@@ -60,55 +60,50 @@ export const filterAdvertisement = async (req, res, next) => {
     }
 };
 
-export const updateAdvertisement = async (req, res, next, Model) => {
+export const updateAdvertisement = async (req, res, next) => {
     try {
-        const advertisementID = req.params.id;
-        const updateBody = req.body;
-        const result = await repository.updateAdvertisement(advertisementID, updateBody, req.user, Model);
+        const result = await repository.updateAdvertisement(req.params.advertisementId, req.body, req.user);
         if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
+            return await sendError(res, result.message, result.statusCode)
         }
-        return await sendResponse(res, result.data.message, 200);
+        return await sendResponse(res, result.message, result.statusCode);
     } catch (error) {
         logger.info(error)
         next(error);
     }
 };
 
-export const deactivateAdvertisement = async (req, res, next, Model) => {
+export const deactivateAdvertisement = async (req, res, next) => {
     try {
-        const advertisementID = req.params.id;
-        const result = await repository.deactivateAdvertisement(advertisementID, req.user, Model);
+        const result = await repository.deactivateAdvertisement(req.params.advertisementId, req.user);
         if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
+            return await sendError(res, result.message, result.statusCode)
         }
-        return await sendResponse(res, result.data.message, result.data.statusCode);
+        return await sendResponse(res, result.message, result.statusCode);
     } catch (error) {
         logger.info(error)
         next(error);
     }
 }
 
-export const addImage = async (req, res, next, Model) => {
+export const addImage = async (req, res, next) => {
     try {
-        const advertisementID = req.params.id;
-        const result = await repository.addImage(advertisementID, req.body.images, req.user, Model);
+        const result = await repository.addImage(req.params.advertisementId, req.body.images, req.user);
         if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
+            return await sendError(res, result.message, result.statusCode)
         }
-        return await sendResponse(res, result.data.message, 200, result.data.data);
+        return await sendResponse(res, result.message, 200, result.data);
     } catch (error) {
         logger.info(error)
         next(error);
     }
 };
 
-export const deleteImage = async (req, res, next, Model) => {
+export const deleteImage = async (req, res, next) => {
     try {
-        const advertisementID = req.params.id;
-        const result = await repository.deleteImage(advertisementID, req.body.images, req.user, Model);
+        const result = await repository.deleteImage(req.params.advertisementId, req.body.images, req.user);
         if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
+            return await sendError(res, result.message, result.statusCode)
         }
         return await sendResponse(res, result.data.message, 200);
     } catch (error) {
@@ -117,28 +112,26 @@ export const deleteImage = async (req, res, next, Model) => {
     }
 };
 
-export const activateAdvertisement = async (req, res, next, Model) => {
+export const activateAdvertisement = async (req, res, next) => {
     try {
-        const advertisementID = req.params.id;
-        const result = await repository.activateAdvertisement(advertisementID, req.user, Model);
+        const result = await repository.activateAdvertisement(req.params.advertisementId, req.user);
         if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
+            return await sendError(res, result.message, result.statusCode)
         }
-        return await sendResponse(res, result.data.message, 200);
+        return await sendResponse(res, result.message, 200);
     } catch (error) {
         logger.info(error)
         next(error);
     }
 };
 
-export const deleteAdvertisement = async (req, res, next, Model) => {
+export const deleteAdvertisement = async (req, res, next) => {
     try {
-        const advertisementID = req.params.id;
-        const result = await repository.deleteAdvertisement(advertisementID, req.user, Model);
+        const result = await repository.deleteAdvertisement(req.params.advertisementId, req.user);
         if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
+            return await sendError(res, result.message, result.statusCode)
         }
-        return await sendResponse(res, result.data.message, 200);
+        return await sendResponse(res, result.message, 200);
     } catch (error) {
         logger.info(error)
         next(error);
