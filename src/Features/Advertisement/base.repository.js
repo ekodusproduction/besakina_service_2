@@ -142,11 +142,11 @@ const filterAdvertisement = async (categoryId, search) => {
             is_active: true, categoryId: categoryId, subcategoryId
                 : { "$in": search }
         };
-        const doctors = await db.collection('advertisement').find(filter).sort({ created_at: -1 }).toArray();
-        if (doctors.length === 0) {
-            return { error: true, data: { message: `No ${categoryId} to show.`, statusCode: 404, data: null } };
+        const advertisement = await db.collection('advertisement').find(filter).sort({ created_at: -1 }).toArray();
+        if (advertisement.length === 0) {
+            return { error: true, message: `No ${categoryId} to show.`, statusCode: 404, data: null };
         }
-        return { error: false, data: { message: "categoryId filter list", statusCode: 200, data: { "property": doctors } } };
+        return { error: false, message: "categoryId filter list", statusCode: 200, data: advertisement };
     } catch (error) {
         logger.info(error);
         throw new ApplicationError(error, 500);

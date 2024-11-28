@@ -52,9 +52,9 @@ export const filterAdvertisement = async (req, res, next, Model) => {
         const {categoryId, search} = req.query;
         const result = await repository.filterAdvertisement(categoryId, JSON.parse(search));
         if (result.error) {
-            return await sendError(res, result.data.message, result.data.statusCode)
+            return await sendError(res, result.message, result.statusCode, result.data)
         }
-        return await sendResponse(res, result.data.message, 200, result.data.data);
+        return await sendResponse(res, result.message, result.statusCode, result.data);
     } catch (error) {
         logger.info(error)
         next(error);
