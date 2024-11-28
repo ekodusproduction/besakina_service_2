@@ -9,12 +9,12 @@ export const sendResponse = async (res, message, http_status_code, data = null, 
 };
 
 
-export const sendError = async (res, message, http_status_code, data) => {
+export const sendError = async (res, message, http_status_code, data = null) => {
     return res.status(http_status_code).send({
         "message": message,
         "http_status_code": http_status_code,
         "success": false,
-        "data": null,
+        "data": data,
         "token": null
     })
 }
