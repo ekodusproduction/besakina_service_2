@@ -24,23 +24,23 @@ export const createCategory = async (req, res, next) => {
 
 export const listCategory = async (req, res, next) => {
     try {
-        // const categories = await getAllCategoryList()
         const categories = await getDB()
-        .collection("categories")
-        .find({ is_active: true })
-        .project({ name: 1, subcategory: 1 , icon: 1}) // Use .project() instead of .select()
-        .sort({ rank: 1 })
-        .toArray();
+            .collection("categories")
+            .find({ is_active: true })
+            .project({ _id: 1, name: 1, icon: 1, subcategory: 1 }) // Select specific fields
+            .sort({ rank: 1 })
+            .toArray();
 
         if (!categories.length) {
             return await sendError(res, 'Categories not found', 404);
         }
-        
+
         return await sendResponse(res, 'Categories fetched successfully', 200, categories);
     } catch (error) {
         next(error);
     }
 };
+
 
 export const listSubCategory = async (req, res, next) => {
     try {

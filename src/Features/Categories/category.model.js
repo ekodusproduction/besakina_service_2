@@ -42,5 +42,5 @@ const categorySchema = new mongoose.Schema({
 });
 
 categorySchema.index({ is_active: 1, rank: 1 })
-const Category = mongoose.model("Category", categorySchema);
+const Category = mongoose.model("Category", categorySchema, 'categories');
 export default Category;

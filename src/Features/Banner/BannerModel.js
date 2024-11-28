@@ -3,11 +3,11 @@ import mongoose from 'mongoose';
 const bannerSchema = new mongoose.Schema({
     type: { type: String, required: 'Please send type of banner' },
     images: { type: String, required: 'Please send image of banner' },
-    isActive:{type:Boolean, default:true},
+    isActive: { type: Boolean, default: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: 'Please send User Id' },
-    subType : {type:String, default: 'mB', enum: ['mB', 'sB'],}
+    subType: { type: String, default: 'mB', enum: ['mB', 'sB'], }
     // mB = main banner, sB = sub banner or side banner
-},{timestamps:true});
+}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
 bannerSchema.index({ type: 1 })
 const Banner = mongoose.model('Banner', bannerSchema);

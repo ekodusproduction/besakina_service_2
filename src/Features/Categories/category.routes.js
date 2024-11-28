@@ -7,7 +7,7 @@ const categoryRouter = Router()
 
 categoryRouter.post("/", jwtAuth, createCategory)
 categoryRouter.get("/", listCategory)
-categoryRouter.get("/:categoryId", listSubCategory)
+categoryRouter.get("/:categoryId/subcategory", listSubCategory)
 categoryRouter.put("/:categoryId", jwtAuth, fileUpload, UpdateCategory)
 categoryRouter.put("/:categoryId/subcategory/:subcategoryId", jwtAuth, fileUpload, UpdateSubCategory)
 categoryRouter.delete("/:categoryId", jwtAuth, deleteCategory)

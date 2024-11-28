@@ -135,15 +135,18 @@ export const getListAdvertisement = async (categoryId, limit, offset) => {
     }
 };
 
-const filterAdvertisement = async (query, Model) => {
+const filterAdvertisement = async (categoryId, search) => {
     const db = getDB();
     try {
-        const filter = { is_active: true, subcategoryId: `${Model}`, ...query };
+        const filter = {
+            is_active: true, categoryId: categoryId, subcategoryId
+                : { "$in": search }
+        };
         const doctors = await db.collection('advertisement').find(filter).sort({ created_at: -1 }).toArray();
         if (doctors.length === 0) {
-            return { error: true, data: { message: "No doctors to show.", statusCode: 404, data: null } };
+            return { error: true, data: { message: `No ${categoryId} to show.`, statusCode: 404, data: null } };
         }
-        return { error: false, data: { message: "Doctors filter list", statusCode: 200, data: { "property": doctors } } };
+        return { error: false, data: { message: "categoryId filter list", statusCode: 200, data: { "property": doctors } } };
     } catch (error) {
         logger.info(error);
         throw new ApplicationError(error, 500);
