@@ -86,6 +86,8 @@ export const getUsers = async function (req, res, next) {
 export const addUserDetails = async function (req, res, next) {
     const { user } = req;
     const body = req.body;
+    console.log("body", body);
+
     try {
         const updatedUser = await userRepo.addUserDetails(user, body);
         return await sendResponse(res, 'User details added.', 201, updatedUser, null);
