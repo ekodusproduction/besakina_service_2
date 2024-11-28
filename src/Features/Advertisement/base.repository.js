@@ -135,12 +135,15 @@ export const getListAdvertisement = async (categoryId, limit, offset) => {
     }
 };
 
-const filterAdvertisement = async (categoryId, search) => {
+const filterAdvertisement = async (categoryId, filter) => {
     const db = getDB();
+    console.log("filter", filter)
+    console.log("type of filter", typeof filter)
+
     try {
         const filter = {
             is_active: true, categoryId: categoryId, subcategoryId
-                : { "$in": search }
+                : { "$in": filter }
         };
         const advertisement = await db.collection('advertisement').find(filter).sort({ created_at: -1 }).toArray();
         if (advertisement.length === 0) {
