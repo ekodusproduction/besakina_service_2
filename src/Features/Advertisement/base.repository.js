@@ -9,13 +9,11 @@ import { ObjectId } from "mongodb";
 export const addAdvertisement = async (requestBody, files, category, schema) => {
     try {
         console.log("schema", schema);
-
-        // Assigning additional properties to the requestBody
         requestBody.images = files;
         requestBody.category = category.name;
         requestBody.categoryId = category._id;
-
-        // Dynamically adding schema properties if provided
+        requestBody.subcategoryId = JSON.parse(requestBody.subcategoryId)
+        
         if (schema) {
             console.log('inside if repository', schema);
             baseSchema.add(schema);
@@ -23,11 +21,9 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
             console.log('inside else');
         }
 
-        // Creating the advertisement model
         const advertisementModel = mongoose.model('advertisement', baseSchema);
         const result = new advertisementModel(requestBody);
 
-        // Validating the data before saving
         try {
             await result.validate();
         } catch (validationError) {
@@ -40,7 +36,6 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
             };
         }
 
-        // Saving the advertisement to the database
         await result.save();
         if (!result) {
             return {
@@ -51,7 +46,6 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
             };
         }
 
-        // Successful response
         return {
             error: false,
             message: `${category.name} added successfully.`,
