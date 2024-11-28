@@ -7,7 +7,7 @@ export const addAdvertisement = async (req, res, next) => {
         req.body.user = req.user
         const result = await repository.addAdvertisement(req.body, req.images, req.category, req.schema);
         if (result.error) {
-            return await sendError(res, result.message, result.statusCode);
+            return await sendError(res, result.message, result.statusCode, result.data);
         }
         return await sendResponse(res, result.message, result.statusCode, result.data);
     } catch (error) {
