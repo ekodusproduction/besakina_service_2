@@ -49,10 +49,7 @@ export const getListAdvertisement = async (req, res, next) => {
 
 export const filterAdvertisement = async (req, res, next) => {
     try {
-        const { categoryId, filter, minPrice, maxPrice } = req.query;
-
-        console.log("search", filter)
-        const result = await repository.filterAdvertisement(categoryId, filter, JSON.parse(minPrice), JSON.parse(maxPrice));
+        const result = await repository.filterAdvertisement(req.query);
         if (result.error) {
             return await sendError(res, result.message, result.statusCode, result.data)
         }

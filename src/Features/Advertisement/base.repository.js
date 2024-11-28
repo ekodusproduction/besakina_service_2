@@ -129,12 +129,12 @@ export const getListAdvertisement = async (categoryId, limit, offset) => {
     }
 };
 
-const filterAdvertisement = async (categoryId, filter, minPrice = 0, maxPrice) => {
+const filterAdvertisement = async (query) => {
     const db = getDB();
-    console.log("filter:", filter);
-    console.log("type of filter:", typeof filter);
-    console.log("Array.isArray(filter):", Array.isArray(filter));
-
+    let { categoryId, filter, minPrice, maxPrice
+    } = query
+    minPrice = parseInt(minPrice) || 0
+    maxPrice = parseInt(maxPrice) || 0
     try {
         // Parse the filter if it's a string
         let parsedFilter = filter;
