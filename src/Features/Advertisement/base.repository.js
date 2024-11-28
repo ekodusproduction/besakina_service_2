@@ -141,11 +141,11 @@ const filterAdvertisement = async (categoryId, filter) => {
     console.log("type of filter", typeof filter)
 
     try {
-        const filter = {
+        const query = {
             is_active: true, categoryId: categoryId, subcategoryId
                 : { "$in": filter }
         };
-        const advertisement = await db.collection('advertisement').find(filter).sort({ created_at: -1 }).toArray();
+        const advertisement = await db.collection('advertisement').find(query).sort({ created_at: -1 }).toArray();
         if (advertisement.length === 0) {
             return { error: true, message: `No ${categoryId} to show.`, statusCode: 404, data: null };
         }
