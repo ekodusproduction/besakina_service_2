@@ -8,20 +8,26 @@ import { ObjectId } from "mongodb";
 
 export const addAdvertisement = async (requestBody, files, category, schema) => {
     try {
-        console.log("schema", schema)
-        requestBody.images = files;
-        requestBody.category = category.name
-        requestBody.categoryId = category._id
+        console.log("schema", schema);
 
+        // Assigning additional properties to the requestBody
+        requestBody.images = files;
+        requestBody.category = category.name;
+        requestBody.categoryId = category._id;
+
+        // Dynamically adding schema properties if provided
         if (schema) {
-            console.log('inside if repository', schema)
+            console.log('inside if repository', schema);
             baseSchema.add(schema);
         } else {
-            console.log('inside else')
-
+            console.log('inside else');
         }
+
+        // Creating the advertisement model
         const advertisementModel = mongoose.model('advertisement', baseSchema);
         const result = new advertisementModel(requestBody);
+
+        // Validating the data before saving
         try {
             await result.validate();
         } catch (validationError) {
@@ -30,20 +36,35 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
                 error: true,
                 message: 'Validation failed. Check input fields.',
                 statusCode: 400,
-                data: validationError.errors
-            }
+                data: validationError.errors,
+            };
+        }
+
+        // Saving the advertisement to the database
+        await result.save();
+        if (!result) {
+            return {
+                error: true,
+                message: `Error adding advertisement ${category.name}.`,
+                statusCode: 400,
+                data: null,
+            };
+        }
+
+        // Successful response
+        return {
+            error: false,
+            message: `${category.name} added successfully.`,
+            statusCode: 200,
+            data: { id: result._id },
         };
+
+    } catch (error) {
+        // Handling unexpected errors
+        console.log("error", error)
+        logger.info(error);
+        throw new ApplicationError(error, 500);
     }
-        result.save();
-    if (!result) {
-        return { error: true, data: { message: `Error adding advertisement ${category.name}.`, statusCode: 400, data: null } };
-    }
-    return { error: false, data: { message: `${category.name} added successfully`, statusCode: 200, data: { id: result._id } } };
-} catch (error) {
-    console.error(error);
-    logger.info(error);
-    throw new ApplicationError(error, 500);
-}
 };
 
 export const getAdvertisement = async (advertisementID) => {
