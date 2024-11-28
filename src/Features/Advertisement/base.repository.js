@@ -129,17 +129,16 @@ export const getListAdvertisement = async (categoryId, limit, offset) => {
     }
 };
 
-const filterAdvertisement = async (categoryId, filter) => {
+const filterAdvertisement = async (categoryId, filter, minPrice = 0, maxPrice) => {
     const db = getDB();
-    console.log("filter", filter);
-    console.log("type of filter", typeof filter);
+    console.log("filter:", filter);
+    console.log("type of filter:", typeof filter);
     console.log("Array.isArray(filter):", Array.isArray(filter));
 
     try {
-        // Ensure filter is an array, if it's a string, try parsing it as JSON
+        // Parse the filter if it's a string
         let parsedFilter = filter;
-
-        if (typeof filter === 'string') {
+        if (filter && typeof filter === 'string') {
             try {
                 parsedFilter = JSON.parse(filter);
             } catch (error) {
@@ -148,26 +147,44 @@ const filterAdvertisement = async (categoryId, filter) => {
             }
         }
 
-        // Check if parsedFilter is now an array
-        if (!Array.isArray(parsedFilter)) {
+        // Ensure parsedFilter is an array
+        if (parsedFilter && !Array.isArray(parsedFilter)) {
             return { error: true, message: "Filter should be an array", statusCode: 400, data: null };
         }
 
-        // Construct the MongoDB query with the parsed filter
-        const query = {
+        // Construct the MongoDB query
+        let query = {
             is_active: true,
             categoryId: new ObjectId(categoryId),
-            subcategoryId: { "$in": parsedFilter }  // Apply the $in operator to filter subcategoryId
+            ...(parsedFilter && { subcategoryId: { "$in": parsedFilter } })
         };
 
+        // Add price constraints if provided
+        if (minPrice) {
+            query.price = query.price || {};
+            query.price["$gte"] = minPrice;
+        }
+        if (maxPrice) {
+            query.price = query.price || {};
+            query.price["$lte"] = maxPrice;
+        }
+
+        // Execute the query
         const advertisement = await db.collection('advertisement').find(query).sort({ created_at: -1 }).toArray();
+
         if (advertisement.length === 0) {
             return { error: true, message: `No advertisements for category ${categoryId} to show.`, statusCode: 404, data: null };
         }
 
         return { error: false, message: "Advertisements filter list", statusCode: 200, data: advertisement };
     } catch (error) {
-        logger.info(error);
+        logger.error("Error in filterAdvertisement:", {
+            error,
+            categoryId,
+            filter,
+            minPrice,
+            maxPrice
+        });
         throw new ApplicationError(error, 500);
     }
 };
