@@ -13,7 +13,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
         requestBody.category = category.name;
         requestBody.categoryId = category._id;
         requestBody.subcategoryId = JSON.parse(requestBody.subcategoryId)
-        
+
         if (schema) {
             console.log('inside if repository', schema);
             baseSchema.add(schema);
@@ -156,7 +156,7 @@ const filterAdvertisement = async (categoryId, filter) => {
         // Construct the MongoDB query with the parsed filter
         const query = {
             is_active: true,
-            categoryId: categoryId,
+            categoryId: new ObjectId(categoryId),
             subcategoryId: { "$in": parsedFilter }  // Apply the $in operator to filter subcategoryId
         };
 
