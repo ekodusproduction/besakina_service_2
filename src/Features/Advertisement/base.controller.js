@@ -5,9 +5,7 @@ import { logger } from "../../Middlewares/logger.middleware.js";
 export const addAdvertisement = async (req, res, next) => {
     try {
         req.body.user = req.user
-        const category = req.category;
-        const schema = req.schema;
-        const result = await repository.addAdvertisement(req.body, req.images, category, schema);
+        const result = await repository.addAdvertisement(req.body, req.images, req.category, req.schema);
         if (result.error) {
             return await sendError(res, result.data.message, result.data.statusCode);
         }

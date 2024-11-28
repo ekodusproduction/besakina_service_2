@@ -4,6 +4,7 @@ import { sendError } from "../Utility/response.js";
 import { getDB } from "../config/mongodb.js";
 import { ObjectId } from "mongodb";
 import { extractCategorySchema } from "../Features/Advertisement/BaseModel/advertisement.submodels.js";
+
 export const advCategoryValidationMiddleware = async (req, res, next) => {
     try {
         // Validate the advertisement type ID from the request parameters
