@@ -47,7 +47,7 @@ export const getListAdvertisement = async (req, res, next) => {
     }
 };
 
-export const filterAdvertisement = async (req, res, next, Model) => {
+export const filterAdvertisement = async (req, res, next) => {
     try {
         const {categoryId, search } = req.query;
         const result = await repository.filterAdvertisement(categoryId, JSON.parse(search));
