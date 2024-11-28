@@ -128,13 +128,14 @@ export const getListAdvertisement = async (categoryId, limit, offset) => {
         throw new ApplicationError(error, 500);
     }
 };
-
-const filterAdvertisement = async (query) => {
+const filterAdvertisement = async (inputQuery) => {
     const db = getDB();
-    let { categoryId, filter, minPrice, maxPrice
-    } = query
-    minPrice = parseInt(minPrice) || 0
-    maxPrice = parseInt(maxPrice) || 0
+    let { categoryId, filter, minPrice, maxPrice } = inputQuery;
+
+    // Ensure minPrice and maxPrice are parsed as integers
+    minPrice = parseInt(minPrice) || 0;
+    maxPrice = parseInt(maxPrice) || 0;
+
     try {
         // Parse the filter if it's a string
         let parsedFilter = filter;
@@ -153,41 +154,56 @@ const filterAdvertisement = async (query) => {
         }
 
         // Construct the MongoDB query
-        let query = {
+        const mongoQuery = {
             is_active: true,
             categoryId: new ObjectId(categoryId),
-            ...(parsedFilter && { subcategoryId: { "$in": parsedFilter } })
+            ...(parsedFilter && { subcategoryId: { "$in": parsedFilter } }),
         };
 
         // Add price constraints if provided
         if (minPrice) {
-            query.price = query.price || {};
-            query.price["$gte"] = minPrice;
+            mongoQuery.price = mongoQuery.price || {};
+            mongoQuery.price["$gte"] = minPrice;
         }
         if (maxPrice) {
-            query.price = query.price || {};
-            query.price["$lte"] = maxPrice;
+            mongoQuery.price = mongoQuery.price || {};
+            mongoQuery.price["$lte"] = maxPrice;
         }
 
         // Execute the query
-        const advertisement = await db.collection('advertisement').find(query).sort({ created_at: -1 }).toArray();
+        const advertisements = await db
+            .collection('advertisement')
+            .find(mongoQuery)
+            .sort({ created_at: -1 })
+            .toArray();
 
-        if (advertisement.length === 0) {
-            return { error: true, message: `No advertisements for category ${categoryId} to show.`, statusCode: 404, data: null };
+        if (advertisements.length === 0) {
+            return {
+                error: true,
+                message: `No advertisements for category ${categoryId} to show.`,
+                statusCode: 404,
+                data: null,
+            };
         }
 
-        return { error: false, message: "Advertisements filter list", statusCode: 200, data: advertisement };
+        return {
+            error: false,
+            message: "Advertisements filter list",
+            statusCode: 200,
+            data: advertisements,
+        };
     } catch (error) {
         logger.error("Error in filterAdvertisement:", {
             error,
             categoryId,
             filter,
             minPrice,
-            maxPrice
+            maxPrice,
         });
         throw new ApplicationError(error, 500);
     }
 };
+
 
 
 export const updateAdvertisement = async (advertisementID, updateBody, userId, Model) => {
