@@ -56,7 +56,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
     } catch (error) {
         // Handling unexpected errors
         console.log("error", error)
-        logger.info(error);
+        logger.error(error);
         throw new ApplicationError(error, 500);
     }
 };
@@ -97,7 +97,7 @@ export const getAdvertisement = async (advertisementID) => {
         }
 
     } catch (error) {
-        logger.info(error);
+        logger.error(error);
         throw new ApplicationError(error, 500);
     }
 };
@@ -124,7 +124,7 @@ export const getListAdvertisement = async (categoryId, limit, offset) => {
             message: `category: ${categoryId} list.`, data: result, statusCode: 200
         };
     } catch (error) {
-        logger.info(error);
+        logger.error(error);
         throw new ApplicationError(error, 500);
     }
 };
@@ -206,105 +206,110 @@ const filterAdvertisement = async (inputQuery) => {
 
 
 
-export const updateAdvertisement = async (advertisementID, updateBody, userId, Model) => {
+export const updateAdvertisement = async (advertisementId, updateBody, userId) => {
     try {
         if (!updateBody || typeof updateBody !== 'object') {
             return { error: true, data: { message: "Invalid request body", statusCode: 400, data: null } };
         }
-        const result = await Model.findOneAndUpdate(
-            { _id: advertisementID, user: userId },
-            updateBody,
-            { new: true }
+        const result = await getDB().collection("advertisement").updateOne(
+            { _id: new ObjectId(advertisementId), user: new ObjectId(userId) },
+            { $set: updateBody }
         );
+
         if (!result) {
-            return { error: true, data: { message: `${Model} not updated. No matching ${Model} found for the provided ID.`, statusCode: 404, data: null } };
+            return { error: true, message: `${advertisementId} not updated. No matching ${advertisementId} found for the provided ID.`, statusCode: 404, data: null };
         }
-        return { error: false, data: { message: `${Model} updated successfully`, statusCode: 200, data: result } };
+        return { error: false, message: `${advertisementId} updated successfully`, statusCode: 200, data: result };
     } catch (error) {
-        logger.info(error);
+        logger.error(error);
         throw new ApplicationError(error, 500);
     }
 };
 
-export const deactivateAdvertisement = async (advertisementID, userId, Model) => {
+export const deactivateAdvertisement = async (advertisementId, userId) => {
     try {
-        const result = await Model.findOneAndUpdate(
-            { _id: advertisementID, user: userId, is_active: true },
-            { is_active: false },
-            { new: true }
+        const result = await getDB().collection("advertisement").updateOne(
+            { _id: new ObjectId(advertisementId), user: new ObjectId(userId), is_active: true },
+            { $set: { is_active: false } }
         );
         if (!result) {
-            return { error: true, data: { message: `${Model}  not found.`, statusCode: 404, data: null } };
+            return {
+                error: true, message: `${advertisementId}  not found.`, statusCode: 404, data: null
+            };
         }
-        return { error: false, data: { message: `${Model} deactivated successfully`, statusCode: 200, data: result } };
+        return {
+            error: false, message: `Advertisement deactivated.`, statusCode: 200, data: result
+        }
     } catch (error) {
-        logger.info(error);
+        logger.error(error);
         throw new ApplicationError(error, 500);
     }
 };
 
-export const addImage = async (advertisementID, files, userId, Model) => {
+export const addImage = async (advertisementId, files, userId) => {
     try {
-        const result = await Model.findOne({ _id: advertisementID, user: userId });
-        if (!result) {
-            return { error: true, data: { message: `${Model}  not found.`, statusCode: 404, data: null } };
+        const result = await getDB().collection("advertisement").updateOne(
+            { _id: new ObjectId(advertisementId), user: new ObjectId(userId) },
+            { $push: { images: files[0] } }
+        );
+
+        if (result.matchedCount === 0) {
+            return { error: true, message: `${advertisementId} not found.`, statusCode: 404, data: null };
         }
         result.images.push(files[0]);
-        await doctor.save();
-        return { error: false, data: { data: [files[0]], message: `${Model} image has been added.`, statusCode: 200 } };
+        await result.save();
+        return { error: false, message: `${advertisementId} image has been added.`, data: [files[0]], statusCode: 200 };
     } catch (error) {
-        logger.info(error);
+        logger.error(error);
         throw new ApplicationError(error, 500);
     }
 };
 
-export const deleteImage = async (advertisementID, files, userId) => {
+export const deleteImage = async (advertisementId, files, userId) => {
     try {
-        const doctor = await Model.findOneAndUpdate(
-            { _id: advertisementID, user: userId },
-            { $pull: { images: files } },
-            { new: true }
+        const result = await getDB().collection("advertisement").updateOne(
+            { _id: new ObjectId(advertisementId), user: new ObjectId(userId) },
+            { $pull: { images: files[0] } }
         );
-        if (!doctor) {
-            return { error: true, data: { message: "Doctors not found.", statusCode: 404, data: null } };
+        if (result.matchedCount === 0) {
+            return { error: true, message: `${advertisementId} not found.`, statusCode: 404, data: null };
         }
-        return { error: false, data: { data: null, message: "Images deleted successfully from the doctors", statusCode: 200 } };
+        return { error: false, message: `${advertisementId} Images deleted successfully.`, data: null, statusCode: 200 }
     } catch (error) {
-        logger.info(error);
+        logger.error(error);
         throw new ApplicationError(error, 500);
     }
 };
 
-export const activateAdvertisement = async (advertisementID, userId) => {
+export const activateAdvertisement = async (advertisementId, userId) => {
     try {
-        const doctor = await Model.findOneAndUpdate(
-            { _id: advertisementID, user: userId, is_active: false },
-            { is_active: true },
-            { new: true }
+        const result = await getDB().collection("advertisement").updateOne(
+            { _id: new ObjectId(advertisementId), user: new ObjectId(userId) },
+            { $set: { is_active: true } }
         );
 
-        if (!doctor) {
-            return { error: true, data: { message: "Doctors not found.", statusCode: 404, data: null } };
+        if (result.matchedCount === 0) {
+            return { error: true, message: `${advertisementId} not found.`, statusCode: 404, data: null };
         }
 
-        return { error: false, data: { data: doctor, message: "Doctors activated successfully", statusCode: 200 } };
+        return { error: false, message: `Advertisement activated.`, data: null, statusCode: 200 }
     } catch (error) {
-        logger.info(error);
+        logger.error(error);
         throw new ApplicationError(error, 500);
     }
 };
 
-export const deleteAdvertisement = async (advertisementID, userId) => {
+export const deleteAdvertisement = async (advertisementId, userId) => {
     try {
-        const result = await Model.deleteOne({ _id: advertisementID, user: userId });
+        const result = await getDB().collection("advertisement").deleteOne({ _id: new ObjectId(advertisementId), user: new ObjectId(userId) });
 
         if (result.deletedCount === 0) {
-            return { error: true, data: { message: "Doctors not found.", statusCode: 404, data: null } };
+            return { error: true, message: `${advertisementId} not found.`, statusCode: 404, data: null };
         }
 
-        return { error: false, data: { message: "Doctors deleted successfully", statusCode: 200 } };
+        return { error: false, message: `Advertisement deleted.`, data: null, statusCode: 200 }
     } catch (error) {
-        logger.info(error);
+        logger.error(error);
         throw new ApplicationError(error, 500);
     }
 };

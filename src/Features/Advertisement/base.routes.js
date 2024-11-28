@@ -25,7 +25,7 @@ advRouter.put("/activate/advertisement/:advertisementId", jwtAuth, activateAdver
 advRouter.delete("/deactivate/advertisement/:advertisementId", jwtAuth, deactivateAdvertisement)
 
 advRouter.delete("/images/advertisement/:advertisementId", jwtAuth, requestBodyValidator, deleteImage)
-advRouter.post("/images/advertisement/:advertisementId", jwtAuth, fileUpload("doctors"), addImage)
+advRouter.post("/images/advertisement/:advertisementId", jwtAuth, fileUpload(), addImage)
 advRouter.delete("/advertisement/:advertisementId", jwtAuth, deleteAdvertisement)
 
 export default advRouter
