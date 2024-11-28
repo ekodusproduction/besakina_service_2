@@ -16,10 +16,10 @@ export const advCategoryValidationMiddleware = async (req, res, next) => {
         // const category = await checkCategoryById(req.body.categoryId)
 
         const category = await getDB().collection("categories").findOne({ _id: new ObjectId(categoryId) });
-        console.log("category", category)
         if (!category) {
             return sendError(res, 'Invalid or inactive categoryId.', 404);
         }
+        console.log("body ", req.body)
         console.log("forsale ", req.body.forSale)
         if (req?.body?.forSale == 'true' || req?.body?.forSale == true) {
             req.schema = await extractCategorySchema(categoryId);

@@ -39,7 +39,6 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
             };
         }
         result.save();
-        console.log("result", result)
         if (!result) {
             return { error: true, data: { message: `Error adding advertisement ${category.name}.`, statusCode: 400, data: null } };
         }
@@ -58,7 +57,7 @@ export const getAdvertisement = async (advertisementID) => {
             { _id: new ObjectId(advertisementID) },
             { $inc: { views: 1 } }
         );
-        
+
         const result = await db.collection('advertisement').aggregate([
             { $match: { _id: new ObjectId(advertisementID) } },
             {
@@ -76,7 +75,7 @@ export const getAdvertisement = async (advertisementID) => {
                 }
             }
         ]).toArray();
-        
+
         console.log("result", result)
         if (result.length === 0) {
             return { error: true, message: `No advertisement to show.`, statusCode: 404, data: null };
