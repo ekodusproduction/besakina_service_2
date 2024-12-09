@@ -108,10 +108,10 @@ export const getListAdvertisement = async (categoryId, limit, offset) => {
         let result;
         console.log("category", categoryId)
         if (categoryId) {
-            result = await getDB().collection('advertisement').find({ is_active: true, categoryId: new ObjectId(categoryId) }).sort({ created_at: -1 }).skip(offset)
+            result = await getDB().collection('advertisement').find({ is_active: true, categoryId: new ObjectId(categoryId) }).sort({ created_at: 1 }).skip(offset)
                 .limit(limit).toArray();
         } else {
-            result = await getDB().collection('advertisement').find({ is_active: true }).sort({ created_at: -1 }).skip(offset)
+            result = await getDB().collection('advertisement').find({ is_active: true }).sort({ created_at: 1 }).skip(offset)
                 .limit(limit).toArray();
         }
         console.log("result", result)
