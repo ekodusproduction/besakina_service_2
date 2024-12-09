@@ -103,7 +103,7 @@ export const getAdvertisement = async (advertisementID) => {
 };
 
 
-export const getListAdvertisement = async (categoryId, limit, offset) => {
+export const getListAdvertisement = async (categoryId = null, limit, offset) => {
     try {
         let result;
         console.log("category", categoryId)
@@ -128,6 +128,7 @@ export const getListAdvertisement = async (categoryId, limit, offset) => {
         throw new ApplicationError(error, 500);
     }
 };
+
 const filterAdvertisement = async (inputQuery) => {
     const db = getDB();
     let { categoryId, filter, minPrice, maxPrice } = inputQuery;
