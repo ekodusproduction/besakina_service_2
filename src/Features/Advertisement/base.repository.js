@@ -18,7 +18,7 @@ export const addAdvertisement = async (requestBody, files, category, schema) => 
             console.log('inside if repository', schema);
             baseSchema.add(schema);
         } else {
-            console.log('inside else');
+            console.log('inside else', baseSchema);
         }
 
         const advertisementModel = mongoose.model('advertisement', baseSchema);
